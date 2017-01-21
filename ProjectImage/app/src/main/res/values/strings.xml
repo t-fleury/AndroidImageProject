@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">ProjectImage</string>
+    <string name="app_name">Image Processing</string>
+
+    <string name="title_activity_reception">Reception</string>
+    <string name="take">Take a picture</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
