@@ -2,6 +2,6 @@
     <string name="app_name">Image Processing</string>
 
     <string name="take">Take a picture</string>
-    <string name="getImg">Get a picture in the album</string>
+    <string name="getImg">Get a picture from album</string>
     <string name="getSaved">Get the last saved picture</string>
 </resources>
