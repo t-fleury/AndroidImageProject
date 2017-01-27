@@ -3,6 +3,7 @@ package com.project.img.projectimage;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CAMERA
     };
     private static final int SELECT_PICTURE = 2;
-    static final int REQUEST_TAKE_PHOTO = 3;
+    private static final int REQUEST_TAKE_PHOTO = 3;
     private Bitmap picture;
     private String mCurrentPhotoPath;
 
@@ -61,24 +63,20 @@ public class MainActivity extends AppCompatActivity {
 
         //Buttons
         Button take = (Button) findViewById(R.id.Take);
-        Button getImg = (Button) findViewById(R.id.getImg);
+        Button loadPicture = (Button) findViewById(R.id.getImg);
         Button getSaved = (Button) findViewById(R.id.getSaved);
 
         take.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePicture();
+                dispatchTakePictureIntent();
             }
         });
 
-        getImg.setOnClickListener(new View.OnClickListener() {
+        loadPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
+                dispatchPickImageIntent();
             }
         });
 
@@ -89,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Check permissions for get picture and camera
+        //Check permissions to get a picture or using the camera
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
             } else {
@@ -98,16 +96,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Log.e("ERR", "createImageFile()");
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private void dispatchPickImageIntent(){
+        Intent pickImageIntent = new Intent(Intent.ACTION_PICK);
+        pickImageIntent.setType("image/*");
+        startActivityForResult(pickImageIntent, SELECT_PICTURE);
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
-                Uri uri = data.getData();
-                File img = new File(uri.getPath());
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                picture = BitmapFactory.decodeFile(img.getPath(),bmOptions);
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                if (cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    mCurrentPhotoPath = cursor.getString(columnIndex);
+                    picture = BitmapFactory.decodeFile(mCurrentPhotoPath);
+                }
+                cursor.close();
             }else if (requestCode == REQUEST_IMAGE_CAPTURE){
-                Bundle extras = data.getExtras();
-                picture = (Bitmap) extras.get("data");
+                picture = BitmapFactory.decodeFile(mCurrentPhotoPath);
                 ((ImageView) findViewById(R.id.imageView)).setImageBitmap(picture);
             }
         }
