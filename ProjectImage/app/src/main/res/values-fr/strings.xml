@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Traitemenet Image</string>
+    <string name="app_name">Traitement Image</string>
 
     <string name="take">Prendre une photo</string>
-    <string name="getImg">Prendre une image de la gallerie</string>
+    <string name="getImg">Prendre une image de la galerie</string>
     <string name="getSaved">Prendre la dernière image sauvegardée</string>
 </resources>
