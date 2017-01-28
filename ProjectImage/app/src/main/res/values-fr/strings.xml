@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Traitement Image</string>
 
-    <string name="take">Prendre une photo</string>
-    <string name="getImg">Prendre une image de la galerie</string>
-    <string name="getSaved">Prendre la dernière image sauvegardée</string>
+    <string name="take_picture">Prendre une photo</string>
+    <string name="get_picture_gallery">Choisir une image depuis la Galerie</string>
+    <string name="get_last_saved">Choisir la dernière image sauvegardée</string>
 </resources>

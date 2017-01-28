@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Image Processing</string>
 
-    <string name="take">Take a picture</string>
-    <string name="getImg">Get a picture from album</string>
-    <string name="getSaved">Get the last saved picture</string>
+    <string name="take_picture">Take a picture</string>
+    <string name="get_picture_gallery">Get a picture from Gallery</string>
+    <string name="get_last_saved">Get the last saved picture</string>
 </resources>

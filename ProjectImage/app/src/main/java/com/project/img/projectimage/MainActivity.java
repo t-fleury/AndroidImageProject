@@ -27,34 +27,14 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int SELECT_PICTURE = 2;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
     };
-    private static final int SELECT_PICTURE = 2;
-    private static final int REQUEST_TAKE_PHOTO = 3;
     private Bitmap picture;
     private String mCurrentPhotoPath;
-
-    private void takePicture(){
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                System.out.println(ex);
-            }
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +42,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Buttons
-        Button take = (Button) findViewById(R.id.Take);
-        Button loadPicture = (Button) findViewById(R.id.getImg);
-        Button getSaved = (Button) findViewById(R.id.getSaved);
+        Button takePhoto = (Button) findViewById(R.id.take_photo);
+        Button loadPicture = (Button) findViewById(R.id.load_picture);
 
-        take.setOnClickListener(new View.OnClickListener() {
+        takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchTakePictureIntent();
@@ -77,13 +56,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dispatchPickImageIntent();
-            }
-        });
-
-        getSaved.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
             }
         });
 
@@ -134,13 +106,12 @@ public class MainActivity extends AppCompatActivity {
                 if (cursor.moveToFirst()) {
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     mCurrentPhotoPath = cursor.getString(columnIndex);
-                    picture = BitmapFactory.decodeFile(mCurrentPhotoPath);
                 }
                 cursor.close();
-            }else if (requestCode == REQUEST_IMAGE_CAPTURE){
-                picture = BitmapFactory.decodeFile(mCurrentPhotoPath);
-                ((ImageView) findViewById(R.id.imageView)).setImageBitmap(picture);
             }
+            Intent intent = new Intent(this, ImageActivity.class);
+            intent.putExtra("Picture path", mCurrentPhotoPath);
+            startActivity(intent);
         }
     }
 
@@ -155,9 +126,5 @@ public class MainActivity extends AppCompatActivity {
         );
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
-    }
-
-    public Bitmap getpicture() {
-        return picture;
     }
 }

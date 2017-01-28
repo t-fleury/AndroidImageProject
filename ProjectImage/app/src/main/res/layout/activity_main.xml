@@ -19,40 +19,31 @@
         android:layout_alignParentStart="true">
 
         <Button
-            android:text="@string/getImg"
+            android:text="@string/get_picture_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/getSaved"
-            android:layout_alignParentBottom="true"
-            android:layout_alignLeft="@+id/getImg"
-            android:layout_alignStart="@+id/getImg" />
-
-        <Button
-            android:text="@string/getImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/getImg"
-            android:layout_alignParentBottom="true"
+            android:id="@+id/load_picture"
+            android:layout_below="@+id/take_photo"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="51dp" />
+            android:layout_marginTop="30dp"
+            android:background="@android:color/holo_blue_light"
+            android:height="75dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableLeft="@android:drawable/ic_menu_gallery" />
 
         <Button
-            android:text="@string/take"
+            android:text="@string/take_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/Take"
-            android:layout_above="@+id/getImg"
-            android:layout_alignLeft="@+id/getImg"
-            android:layout_alignStart="@+id/getImg" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/pandaria"
-            android:id="@+id/imageView"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:id="@+id/take_photo"
+            android:background="@android:color/holo_green_light"
+            android:height="75dp"
+            android:drawableStart="@android:drawable/ic_menu_camera"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
