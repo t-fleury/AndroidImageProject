@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -17,7 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
     };
-    private Bitmap picture;
     private String mCurrentPhotoPath;
 
     @Override
@@ -44,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         //Buttons
         Button takePhoto = (Button) findViewById(R.id.take_photo);
         Button loadPicture = (Button) findViewById(R.id.load_picture);
+        Button savedPicture = (Button) findViewById(R.id.saved_picture);
 
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dispatchPickImageIntent();
+            }
+        });
+
+        savedPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO
             }
         });
 
@@ -101,13 +107,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                if (cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    mCurrentPhotoPath = cursor.getString(columnIndex);
-                }
-                cursor.close();
+                mCurrentPhotoPath = selectedImage.getPath();
             }
             Intent intent = new Intent(this, ImageActivity.class);
             intent.putExtra("Picture path", mCurrentPhotoPath);

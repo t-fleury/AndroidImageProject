@@ -4,4 +4,5 @@
     <string name="take_picture">Prendre une photo</string>
     <string name="get_picture_gallery">Choisir une image depuis la Galerie</string>
     <string name="get_last_saved">Choisir la dernière image sauvegardée</string>
+    <string name="filter">Filtres</string>
 </resources>

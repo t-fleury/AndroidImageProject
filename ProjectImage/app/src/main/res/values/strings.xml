@@ -4,4 +4,5 @@
     <string name="take_picture">Take a picture</string>
     <string name="get_picture_gallery">Get a picture from Gallery</string>
     <string name="get_last_saved">Get the last saved picture</string>
+    <string name="filter">Filters</string>
 </resources>

@@ -23,14 +23,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/saved_picture"
-            android:layout_marginTop="43dp"
             android:background="@color/colorAccent"
             android:height="75dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:drawableLeft="@android:drawable/stat_sys_download"
-            android:layout_below="@+id/load_picture"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+
+        <Button
+            android:text="@string/get_picture_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/load_picture"
+            android:background="@android:color/holo_blue_light"
+            android:height="75dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableLeft="@android:drawable/ic_menu_gallery"
+            android:layout_marginTop="41dp"
+            android:layout_below="@+id/take_photo"
+            android:layout_alignLeft="@+id/saved_picture"
+            android:layout_alignStart="@+id/saved_picture"
+            android:layout_alignRight="@+id/saved_picture"
+            android:layout_alignEnd="@+id/saved_picture" />
 
         <Button
             android:text="@string/take_picture"
@@ -42,29 +58,11 @@
             android:drawableStart="@android:drawable/ic_menu_camera"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:layout_marginTop="79dp"
             android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/saved_picture"
-            android:layout_alignStart="@+id/saved_picture"
+            android:layout_alignLeft="@+id/load_picture"
+            android:layout_alignStart="@+id/load_picture"
             android:layout_alignRight="@+id/saved_picture"
             android:layout_alignEnd="@+id/saved_picture" />
-
-        <Button
-            android:text="@string/get_picture_gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/load_picture"
-            android:layout_marginTop="38dp"
-            android:background="@android:color/holo_blue_light"
-            android:height="75dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:drawableLeft="@android:drawable/ic_menu_gallery"
-            android:layout_below="@+id/take_photo"
-            android:layout_alignLeft="@+id/take_photo"
-            android:layout_alignStart="@+id/take_photo"
-            android:layout_alignRight="@+id/take_photo"
-            android:layout_alignEnd="@+id/take_photo" />
 
     </RelativeLayout>
 
