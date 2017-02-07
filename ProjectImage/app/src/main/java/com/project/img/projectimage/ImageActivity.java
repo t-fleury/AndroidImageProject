@@ -11,7 +11,8 @@ import android.widget.ImageView;
 
 public class ImageActivity extends AppCompatActivity {
 
-    ImageView initialImage;
+    private ImageView initialImage;
+    private CustomImageView mCustomImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,11 +20,13 @@ public class ImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image);
 
         initialImage = (ImageView) findViewById(R.id.initial_image);
+        mCustomImageView = (CustomImageView) findViewById(R.id.customImageView);
 
         Intent intent = getIntent();
         String mCurrentPhotoPath = intent.getStringExtra("Picture path");
         Bitmap picture_bm = BitmapFactory.decodeFile(mCurrentPhotoPath);
-        initialImage.setImageBitmap(picture_bm);
+        //initialImage.setImageBitmap(picture_bm);
+        mCustomImageView.setImageBitmap(picture_bm);
 
         Button filter_button = (Button) findViewById(R.id.filter_button);
         filter_button.setOnClickListener(new View.OnClickListener() {
