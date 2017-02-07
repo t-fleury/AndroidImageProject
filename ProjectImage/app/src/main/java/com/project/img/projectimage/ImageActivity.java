@@ -25,7 +25,7 @@ public class ImageActivity extends AppCompatActivity {
         Bitmap picture_bm = BitmapFactory.decodeFile(mCurrentPhotoPath);
         initialImage.setImageBitmap(picture_bm);
 
-        Button filter_button = (Button) findViewById(R.id.filter);
+        Button filter_button = (Button) findViewById(R.id.filter_button);
         filter_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

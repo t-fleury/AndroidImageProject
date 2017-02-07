@@ -24,18 +24,35 @@
             android:id="@+id/initial_image"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_above="@+id/filter" />
+            android:layout_above="@+id/filter_button" />
 
         <Button
             android:text="@string/filter"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:id="@+id/filter"
-            android:layout_alignParentRight="true"
+            android:id="@+id/filter_button"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentEnd="false"
+            android:background="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:width="@android:dimen/thumbnail_width"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp" />
+
+        <Button
+            android:text="@string/display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/display_button"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="@color/colorPrimary" />
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="false"
+            android:layout_toEndOf="@+id/filter_button"
+            android:background="@android:color/holo_orange_dark"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp" />
     </RelativeLayout>
 </RelativeLayout>
