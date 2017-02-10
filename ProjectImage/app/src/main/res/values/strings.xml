@@ -6,4 +6,16 @@
     <string name="get_last_saved">Get the last saved picture</string>
     <string name="filter">Filters</string>
     <string name="display">Display full size</string>
+
+    <!-- Filter name -->
+    <string name="set_luminosity">Set luminosity</string>
+    <string name="set_constrast">Set constrast</string>
+    <string name="hist_eq">Histogram equalization</string>
+    <string name="shade_of_grey">Shade of grey</string>
+    <string name="sepia">Sepia</string>
+    <string name="color_filter">Color filter</string>
+    <string name="keep_color">Keep a color</string>
+    <string name="convolution">Convolution</string>
+    <string name="reset_picture">Reset picture</string>
+
 </resources>
