@@ -6,4 +6,18 @@
     <string name="get_last_saved">Choisir la dernière image sauvegardée</string>
     <string name="filter">Filtres</string>
     <string name="display">Afficher en taille réelle</string>
+    <string name="reset_picture">Réinitialiser l\'image</string>
+
+    <string-array name="filter_name">
+        <item>Définir la luminosité</item>
+        <item>Définir le constraste</item>
+        <item>Egalisation d\'histogramme</item>
+        <item>Nuance de gris</item>
+        <item>Sépia</item>
+        <item>Filtre couleur</item>
+        <item>Filtre aléatoire couleur</item>
+        <item>Garder une couleur</item>
+        <item>Convolution</item>
+    </string-array>
+
 </resources>
