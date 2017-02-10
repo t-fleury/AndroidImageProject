@@ -107,15 +107,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                if (cursor != null) {
-                    if (cursor.moveToFirst()) {
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        mCurrentPhotoPath = cursor.getString(columnIndex);
-                    }
-                    cursor.close();
-                }
+                mCurrentPhotoPath = selectedImage.getPath();
             }
             Intent intent = new Intent(this, ImageActivity.class);
             intent.putExtra("Picture path", mCurrentPhotoPath);
