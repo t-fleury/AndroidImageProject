@@ -43,7 +43,7 @@
             android:id="@+id/filter_button"
             android:layout_alignParentRight="false"
             android:layout_alignParentEnd="false"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorAccent"
             android:layout_width="wrap_content"
             android:width="@android:dimen/thumbnail_width"
             android:layout_marginStart="5dp"
@@ -59,7 +59,7 @@
             android:layout_alignParentStart="false"
             android:layout_alignParentTop="false"
             android:layout_toEndOf="@+id/filter_button"
-            android:background="@android:color/holo_orange_dark"
+            android:background="@color/colorPrimaryDark"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp" />
     </RelativeLayout>
