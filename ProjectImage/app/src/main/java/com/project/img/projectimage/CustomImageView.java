@@ -16,6 +16,10 @@ public class CustomImageView extends ImageView {
     private Bitmap mBitmap;
     private int mImageWidth;
     private int mImageHeight;
+    private static float MIN_ZOOM = 1f;
+    private static float MAX_ZOOM = 5f;
+
+    private float scaleFactor = 1.f;
 
     public CustomImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
