@@ -61,36 +61,47 @@ public class MainActivity extends AppCompatActivity {
 
     //NOT FINISHED
     private void convulation(){
+        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        int[] pixelMoyenneur = new int[bitmap.getWidth() * bitmap.getHeight()];
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        int[] pixels = new int[width * height];
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-        int averageR = 0, averageG = 0, averageB = 0;
-        for (int i = 0; i < width - sizeMatrix; i++) {
-            for (int j = 0; j < height - sizeMatrix; j++) {
-                for (int k = i; k < sizeMatrix; k++) {
-                    for (int l = j; l < sizeMatrix; l++) {
-                        averageR += Color.red(bitmap.getPixel(k,l));
-                        averageG += Color.green(bitmap.getPixel(k,l));
-                        averageB += Color.blue(bitmap.getPixel(k,l));
+        int red=0, blue=0, green=0, x_pixelMatrix, y_pixelMatrix;
+        for(int i = 0; i < pixelMoyenneur.length; i++)
+        {
+            x_pixelMatrix=i%width;
+            y_pixelMatrix=i/width;
+
+            if(i <= width*(sizeMatrix/2) || i >= width * (height-(sizeMatrix/2)) || i % width < sizeMatrix/2  || i % width >= width-(sizeMatrix/2))
+            {
+                red = Color.red(pixels[i]);
+                green = Color.green(pixels[i]);
+                blue = Color.blue(pixels[i]);
+            }
+            else {
+                for (int x = x_pixelMatrix -(sizeMatrix / 2); x <= x_pixelMatrix +(sizeMatrix / 2); x++) {
+                    for (int y = y_pixelMatrix - (sizeMatrix / 2); y <= y_pixelMatrix + (sizeMatrix / 2); y++) {
+                        red+=Color.red(pixels[x+y*width]);
+                        green+=Color.green(pixels[x+y*width]);
+                        blue+=Color.blue(pixels[x+y*width]);
                     }
                 }
-               pixels[i+(sizeMatrix/2) + (j+(sizeMatrix/2)) * width] =
-                       Color.rgb((averageR / (sizeMatrix*sizeMatrix))%256,
-                                 (averageG / (sizeMatrix*sizeMatrix))%256,
-                                 (averageB / (sizeMatrix*sizeMatrix))%256);
-               averageR = 0;
-               averageG = 0;
-               averageB = 0;
             }
+
+            red/=(sizeMatrix*sizeMatrix);
+            green/=(sizeMatrix*sizeMatrix);
+            blue/=(sizeMatrix*sizeMatrix);
+            pixelMoyenneur[i] = Color.rgb(red, green, blue);
         }
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+
+        bitmap.setPixels(pixelMoyenneur, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        imageView.setImageBitmap(bitmap);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.pandaria);
+        bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.tmp);
         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         imageView = (ImageView) findViewById(R.id.imageView);
