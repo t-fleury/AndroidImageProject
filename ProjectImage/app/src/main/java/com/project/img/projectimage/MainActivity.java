@@ -1,27 +1,14 @@
 package com.project.img.projectimage;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import static com.project.img.projectimage.Filters.*;
+import java.util.Arrays;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -59,14 +46,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
 
-    //NOT FINISHED
-    private void convulation(){
-        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
-        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-        int[] pixelMoyenneur = new int[bitmap.getWidth() * bitmap.getHeight()];
+    //Moyenneur - Bugé sur mon tel(thomas)
+    private void convulationMoyenneur(){
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
+        int[] pixels = new int[width * height];
+        int[] pixelMoyenneur = new int[width * height];
         int red=0, blue=0, green=0, x_pixelMatrix, y_pixelMatrix;
+
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        bitmap.getPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
+
         for(int i = 0; i < pixelMoyenneur.length; i++)
         {
             x_pixelMatrix=i%width;
@@ -98,6 +88,49 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
     }
 
+    //Median
+    private void convulationMedian(){
+        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        int[] pixelMoyenneur = new int[bitmap.getWidth() * bitmap.getHeight()];
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int[] red= new int[sizeMatrix*sizeMatrix];
+        int[] blue= new int[sizeMatrix*sizeMatrix];
+        int[] green= new int[sizeMatrix*sizeMatrix];
+        int x_pixelMatrix, y_pixelMatrix;
+        for(int i = 0; i < pixelMoyenneur.length; i++)
+        {
+            x_pixelMatrix=i%width;
+            y_pixelMatrix=i/width;
+
+            if(i <= width*(sizeMatrix/2) || i >= width * (height-(sizeMatrix/2)) || i % width < sizeMatrix/2  || i % width >= width-(sizeMatrix/2))
+            {
+                red[0] = Color.red(pixels[i]);
+                green[0] = Color.green(pixels[i]);
+                blue[0] = Color.blue(pixels[i]);
+            }
+            else {
+                int index = 0;
+                for (int x = x_pixelMatrix -(sizeMatrix / 2); x <= x_pixelMatrix +(sizeMatrix / 2); x++) {
+                    for (int y = y_pixelMatrix - (sizeMatrix / 2); y <= y_pixelMatrix + (sizeMatrix / 2); y++) {
+                        red[index] = Color.red(pixels[x+y*width]);
+                        green[index] = Color.green(pixels[x+y*width]);
+                        blue[index] = Color.blue(pixels[x+y*width]);
+                        index++;
+                    }
+                }
+            }
+            Arrays.sort(red);
+            Arrays.sort(green);
+            Arrays.sort(blue);
+            pixelMoyenneur[i] = Color.rgb(red[(sizeMatrix/2 + 1)], green[(sizeMatrix/2 + 1)], blue[(sizeMatrix/2 + 1)]);
+        }
+
+        bitmap.setPixels(pixelMoyenneur, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        imageView.setImageBitmap(bitmap);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -113,11 +146,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button testFilter = (Button) findViewById(R.id.testFilter);
-        testFilter.setOnClickListener(new View.OnClickListener() {
+        Button moyenneur = (Button) findViewById(R.id.moyenneur);
+        moyenneur.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                convulation();
+                convulationMoyenneur();
+            }
+        });
+
+        Button median = (Button) findViewById(R.id.median);
+        median.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                convulationMedian();
             }
         });
 
