@@ -15,7 +15,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Bitmap bitmap;
     private ImageView imageView;
-    final private int sizeMatrix = 3;
+    final private int SIZE_MATRIX = 5;
+    final private int LAPLACE_SIZE_MATRIX = 3;
+    final private int[][] LAPLACE_FILTER1 = {{0, 1, 0},
+                                             {1,-4, 1},
+                                             {0, 1, 0}};
+    final private int[][] LAPLACE_FILTER2 = {{1, 1, 1},
+                                             {1,-8, 1},
+                                             {1, 1, 1}};
     /*private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -55,22 +62,18 @@ public class MainActivity extends AppCompatActivity {
         int red=0, blue=0, green=0, x_pixelMatrix, y_pixelMatrix;
 
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-        bitmap.getPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
 
         for(int i = 0; i < pixelMoyenneur.length; i++)
         {
             x_pixelMatrix=i%width;
             y_pixelMatrix=i/width;
-
-            if(i <= width*(sizeMatrix/2) || i >= width * (height-(sizeMatrix/2)) || i % width < sizeMatrix/2  || i % width >= width-(sizeMatrix/2))
-            {
+            if(i <= width*(SIZE_MATRIX/2) || i >= width * (height-(SIZE_MATRIX/2)) || i % width < SIZE_MATRIX/2  || i % width >= width-(SIZE_MATRIX/2)) {
                 red = Color.red(pixels[i]);
                 green = Color.green(pixels[i]);
                 blue = Color.blue(pixels[i]);
-            }
-            else {
-                for (int x = x_pixelMatrix -(sizeMatrix / 2); x <= x_pixelMatrix +(sizeMatrix / 2); x++) {
-                    for (int y = y_pixelMatrix - (sizeMatrix / 2); y <= y_pixelMatrix + (sizeMatrix / 2); y++) {
+            }else {
+                for (int x = x_pixelMatrix -(SIZE_MATRIX / 2); x <= x_pixelMatrix +(SIZE_MATRIX / 2); x++) {
+                    for (int y = y_pixelMatrix - (SIZE_MATRIX / 2); y <= y_pixelMatrix + (SIZE_MATRIX / 2); y++) {
                         red+=Color.red(pixels[x+y*width]);
                         green+=Color.green(pixels[x+y*width]);
                         blue+=Color.blue(pixels[x+y*width]);
@@ -78,33 +81,33 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            red/=(sizeMatrix*sizeMatrix);
-            green/=(sizeMatrix*sizeMatrix);
-            blue/=(sizeMatrix*sizeMatrix);
+            red/=(SIZE_MATRIX*SIZE_MATRIX);
+            green/=(SIZE_MATRIX*SIZE_MATRIX);
+            blue/=(SIZE_MATRIX*SIZE_MATRIX);
             pixelMoyenneur[i] = Color.rgb(red, green, blue);
         }
 
-        bitmap.setPixels(pixelMoyenneur, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        bitmap.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
         imageView.setImageBitmap(bitmap);
     }
 
     //Median
     private void convulationMedian(){
-        int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
-        bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-        int[] pixelMoyenneur = new int[bitmap.getWidth() * bitmap.getHeight()];
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        int[] red= new int[sizeMatrix*sizeMatrix];
-        int[] blue= new int[sizeMatrix*sizeMatrix];
-        int[] green= new int[sizeMatrix*sizeMatrix];
+        int[] pixels = new int[width * height];
+        int[] pixelMoyenneur = new int[width * height];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        int[] red= new int[SIZE_MATRIX*SIZE_MATRIX];
+        int[] blue= new int[SIZE_MATRIX*SIZE_MATRIX];
+        int[] green= new int[SIZE_MATRIX*SIZE_MATRIX];
         int x_pixelMatrix, y_pixelMatrix;
         for(int i = 0; i < pixelMoyenneur.length; i++)
         {
             x_pixelMatrix=i%width;
             y_pixelMatrix=i/width;
 
-            if(i <= width*(sizeMatrix/2) || i >= width * (height-(sizeMatrix/2)) || i % width < sizeMatrix/2  || i % width >= width-(sizeMatrix/2))
+            if(i <= width*(SIZE_MATRIX/2) || i >= width * (height-(SIZE_MATRIX/2)) || i % width < SIZE_MATRIX/2  || i % width >= width-(SIZE_MATRIX/2))
             {
                 red[0] = Color.red(pixels[i]);
                 green[0] = Color.green(pixels[i]);
@@ -112,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 int index = 0;
-                for (int x = x_pixelMatrix -(sizeMatrix / 2); x <= x_pixelMatrix +(sizeMatrix / 2); x++) {
-                    for (int y = y_pixelMatrix - (sizeMatrix / 2); y <= y_pixelMatrix + (sizeMatrix / 2); y++) {
+                for (int x = x_pixelMatrix -(SIZE_MATRIX / 2); x <= x_pixelMatrix +(SIZE_MATRIX / 2); x++) {
+                    for (int y = y_pixelMatrix - (SIZE_MATRIX / 2); y <= y_pixelMatrix + (SIZE_MATRIX / 2); y++) {
                         red[index] = Color.red(pixels[x+y*width]);
                         green[index] = Color.green(pixels[x+y*width]);
                         blue[index] = Color.blue(pixels[x+y*width]);
@@ -124,10 +127,60 @@ public class MainActivity extends AppCompatActivity {
             Arrays.sort(red);
             Arrays.sort(green);
             Arrays.sort(blue);
-            pixelMoyenneur[i] = Color.rgb(red[(sizeMatrix/2 + 1)], green[(sizeMatrix/2 + 1)], blue[(sizeMatrix/2 + 1)]);
+            pixelMoyenneur[i] = Color.rgb(red[(SIZE_MATRIX/2 + 1)], green[(SIZE_MATRIX/2 + 1)], blue[(SIZE_MATRIX/2 + 1)]);
         }
 
-        bitmap.setPixels(pixelMoyenneur, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        bitmap.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
+        imageView.setImageBitmap(bitmap);
+    }
+
+    private void convulationLaplace(int[][] matrix){
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int[] pixels = new int[width * height];
+        int[] pixelMoyenneur = new int[width * height];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        int[] red= new int[LAPLACE_SIZE_MATRIX*LAPLACE_SIZE_MATRIX];
+        int[] blue= new int[LAPLACE_SIZE_MATRIX*LAPLACE_SIZE_MATRIX];
+        int[] green= new int[LAPLACE_SIZE_MATRIX*LAPLACE_SIZE_MATRIX];
+        int x_pixelMatrix, y_pixelMatrix;
+        for(int i = 0; i < pixelMoyenneur.length; i++)
+        {
+            x_pixelMatrix=i%width;
+            y_pixelMatrix=i/width;
+
+            if(i <= width*(LAPLACE_SIZE_MATRIX/2) || i >= width * (height-(LAPLACE_SIZE_MATRIX/2)) || i % width < LAPLACE_SIZE_MATRIX/2  || i % width >= width-(LAPLACE_SIZE_MATRIX/2))
+            {
+                red[0] = Color.red(pixels[i]);
+                green[0] = Color.green(pixels[i]);
+                blue[0] = Color.blue(pixels[i]);
+            }
+            else {
+                int index = 0;
+                int laplaceX = 0, laplaceY = 0;
+                for (int x = x_pixelMatrix -(LAPLACE_SIZE_MATRIX / 2); x <= x_pixelMatrix +(LAPLACE_SIZE_MATRIX / 2); x++) {
+                    for (int y = y_pixelMatrix - (LAPLACE_SIZE_MATRIX / 2); y <= y_pixelMatrix + (LAPLACE_SIZE_MATRIX / 2); y++) {
+                        red[index] = Color.red(pixels[x+y*width])*matrix[laplaceX][laplaceY];
+                        green[index] = Color.green(pixels[x+y*width])*matrix[laplaceX][laplaceY];
+                        blue[index] = Color.blue(pixels[x+y*width])*matrix[laplaceX][laplaceY];
+                        index++;
+                        laplaceY++;
+                        if(laplaceY == 3){
+                            laplaceX++;
+                            laplaceY = 0;
+                        }
+                    }
+                }
+            }
+            int finalRed = 0, finalGreen = 0, finalBlue = 0;
+            for (int color : red) finalRed += color;
+            for (int color : green) finalGreen += color;
+            for (int color : blue) finalBlue += color;
+
+            pixelMoyenneur[i] = Color.rgb(finalRed,finalGreen,finalBlue);
+        }
+
+        bitmap.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
         imageView.setImageBitmap(bitmap);
     }
 
@@ -161,7 +214,20 @@ public class MainActivity extends AppCompatActivity {
                 convulationMedian();
             }
         });
-
+        Button lp1 = (Button) findViewById(R.id.LP1);
+        lp1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                convulationLaplace(LAPLACE_FILTER1);
+            }
+        });
+        Button lp2 = (Button) findViewById(R.id.LP2);
+        lp2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                convulationLaplace(LAPLACE_FILTER2);
+            }
+        });
        /* //Buttons
         Button take = (Button) findViewById(R.id.Take);
         Button getImg = (Button) findViewById(R.id.getImg);

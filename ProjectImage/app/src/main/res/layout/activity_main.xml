@@ -46,6 +46,24 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
+        <Button
+            android:text="Laplace1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/LP1"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/moyenneur"
+            android:layout_toEndOf="@+id/moyenneur" />
+
+        <Button
+            android:text="Laplace2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/LP2"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/LP1"
+            android:layout_toEndOf="@+id/LP1" />
+
     </RelativeLayout>
 
 </RelativeLayout>
