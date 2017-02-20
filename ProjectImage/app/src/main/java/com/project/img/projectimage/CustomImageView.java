@@ -17,18 +17,20 @@ import android.widget.ImageView;
 
 public class CustomImageView extends ImageView {
 
-    private Bitmap bitmap;
+    //private Bitmap bitmap;
 
     private static float MIN_ZOOM = 1f;
     private static float MAX_ZOOM = 5f;
 
     private float scaleFactor = 1.f;
+    private float pivotPointX = 0f;
+    private float pivotPointY = 0f;
     private ScaleGestureDetector detector;
 
     public CustomImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         detector = new ScaleGestureDetector(getContext(), new ScaleListener());
-        bitmap = ((BitmapDrawable)getDrawable()).getBitmap();
+        //bitmap = ((BitmapDrawable)getDrawable()).getBitmap();
     }
 
 
@@ -61,6 +63,8 @@ public class CustomImageView extends ImageView {
         public boolean onScale(ScaleGestureDetector detector) {
             Log.d("scale detector", "detected");
             scaleFactor *= detector.getScaleFactor();
+            pivotPointX = detector.getFocusX();
+            pivotPointY = detector.getFocusY();
             scaleFactor = Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM));
             invalidate();
             return true;
