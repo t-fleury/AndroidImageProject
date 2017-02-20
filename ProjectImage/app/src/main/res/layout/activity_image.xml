@@ -33,7 +33,8 @@
             android:scaleType="center"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_above="@+id/filter_button"/>
+            android:layout_above="@+id/filter_button"
+            android:adjustViewBounds="true"/>
 
         <Button
             android:text="@string/filter"
