@@ -22,16 +22,18 @@ public class CustomImageView extends ImageView {
 
     private Drawable drawable;
     private Bitmap bitmap;
-    private int limitX;
-    private int limitY;
+    private int bmWidth,bmHeight, drawableWidth, drawableHeight;
 
     private static float MIN_ZOOM = 1f;
     private static float MAX_ZOOM = 5f;
-    private float mPosX = 0f;
-    private float mPosY = 0f;
 
-    private float mLastTouchX;
-    private float mLastTouchY;
+    // set scroll limits
+    private int maxLeft, maxRight, maxTop, maxBottom;
+
+    private float downX, downY;
+    private float mLastTouchX, mLastTouchY;
+    private int totalX, totalY;
+    private int scrollByX, scrollByY;
     private static final int INVALID_POINTER_ID = -1;
     private static final String LOG_TAG = "TouchImageView";
 
@@ -53,14 +55,26 @@ public class CustomImageView extends ImageView {
         super.setImageBitmap(bm);
         bitmap = ((BitmapDrawable)getDrawable()).getBitmap();
         drawable = getDrawable();
-        int bmWidth = bitmap.getWidth();
-        int bmHeight = bitmap.getHeight();
-        int drawableWidth = getWidth();
-        int drawableHeight = getHeight();
-        limitX = (bmWidth/2) - (drawableWidth/2);
-        limitY = (bmHeight/2) - (drawableHeight/2);
+
+        bmWidth = bitmap.getWidth();
+        bmHeight = bitmap.getHeight();
+        drawableWidth = getWidth();
+        drawableHeight = getHeight();
+
+        // set maximum scroll amount (based on center of image)
+        int maxX = (int)((bmWidth / 2) - (drawableWidth / 2));
+        int maxY = (int)((bmHeight / 2) - (drawableHeight / 2));
+
+        // set scroll limits
+        maxLeft = (maxX * -1);
+        maxRight = maxX;
+        maxTop = (maxY * -1);
+        maxBottom = maxY;
 
     }
+
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -69,11 +83,11 @@ public class CustomImageView extends ImageView {
         final int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                final float x = ev.getX();
-                final float y = ev.getY();
+                downX = ev.getX();
+                downY = ev.getY();
 
-                mLastTouchX = x;
-                mLastTouchY = y;
+                mLastTouchX = downX;
+                mLastTouchY = downY;
 
                 mActivePointerId = ev.getPointerId(0);
                 break;
@@ -81,29 +95,90 @@ public class CustomImageView extends ImageView {
 
             case MotionEvent.ACTION_MOVE: {
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                final float x = ev.getX(pointerIndex);
-                final float y = ev.getY(pointerIndex);
+                final float currentX = ev.getX(pointerIndex);
+                final float currentY = ev.getY(pointerIndex);
 
-                if (!detector.isInProgress()) {
-                    final float dx = x - mLastTouchX;
-                    final float dy = y - mLastTouchY;
+                scrollByX = (int)(downX - currentX);
+                scrollByY = (int)(downY - currentY);
 
-                    mPosX += dx;
-                    if (mPosX < (0 - limitX))
-                        mPosX = 0 - limitX;
-                    else if (mPosX > limitX)
-                        mPosX = limitX;
-                    mPosY += dy;
-                    if (mPosY < (0 - limitY))
-                        mPosY = 0 - limitY;
-                    else if (mPosY > limitY)
-                        mPosY = limitY;
-
-                    invalidate();
+                // scrolling to left side of image (pic moving to the right)
+                if (currentX > downX)
+                {
+                    if (totalX == maxLeft)
+                    {
+                        scrollByX = 0;
+                    }
+                    if (totalX > maxLeft)
+                    {
+                        totalX = totalX + scrollByX;
+                    }
+                    if (totalX < maxLeft)
+                    {
+                        scrollByX = maxLeft - (totalX - scrollByX);
+                        totalX = maxLeft;
+                    }
                 }
 
-                mLastTouchX = x;
-                mLastTouchY = y;
+                // scrolling to right side of image (pic moving to the left)
+                if (currentX < downX)
+                {
+                    if (totalX == maxRight)
+                    {
+                        scrollByX = 0;
+                    }
+                    if (totalX < maxRight)
+                    {
+                        totalX = totalX + scrollByX;
+                    }
+                    if (totalX > maxRight)
+                    {
+                        scrollByX = maxRight - (totalX - scrollByX);
+                        totalX = maxRight;
+                    }
+                }
+
+                // scrolling to top of image (pic moving to the bottom)
+                if (currentY > downY)
+                {
+                    if (totalY == maxTop)
+                    {
+                        scrollByY = 0;
+                    }
+                    if (totalY > maxTop)
+                    {
+                        totalY = totalY + scrollByY;
+                    }
+                    if (totalY < maxTop)
+                    {
+                        scrollByY = maxTop - (totalY - scrollByY);
+                        totalY = maxTop;
+                    }
+                }
+
+                // scrolling to bottom of image (pic moving to the top)
+                if (currentY < downY)
+                {
+                    if (totalY == maxBottom)
+                    {
+                        scrollByY = 0;
+                    }
+                    if (totalY < maxBottom)
+                    {
+                        totalY = totalY + scrollByY;
+                    }
+                    if (totalY > maxBottom)
+                    {
+                        scrollByY = maxBottom - (totalY - scrollByY);
+                        totalY = maxBottom;
+                    }
+                }
+
+                scrollBy(scrollByX, scrollByY);
+                downX = currentX;
+                downY = currentY;
+
+                mLastTouchX = totalX;
+                mLastTouchY = totalY;
                 break;
             }
 
@@ -141,7 +216,7 @@ public class CustomImageView extends ImageView {
 
         canvas.save();
 
-        canvas.translate(mPosX, mPosY);
+        //canvas.translate(scrollByX, scrollByY);
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleFactor, scaleFactor, pivotPointX,
