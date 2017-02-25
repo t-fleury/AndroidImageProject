@@ -13,6 +13,7 @@ public class ImageActivity extends AppCompatActivity {
 
     private ImageView initialImage;
     private CustomImageView mCustomImageView;
+    private boolean choice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,5 +37,17 @@ public class ImageActivity extends AppCompatActivity {
                 filter_dialogFragment.show(getFragmentManager(), "filters");
             }
         });
+    }
+
+    public CustomImageView getmCustomImageView() {
+        return mCustomImageView;
+    }
+
+    public boolean isChoice() {
+        return choice;
+    }
+
+    public void setChoice(boolean choice) {
+        this.choice = choice;
     }
 }

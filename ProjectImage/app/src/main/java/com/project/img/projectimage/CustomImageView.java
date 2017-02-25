@@ -240,4 +240,13 @@ public class CustomImageView extends ImageView {
             return true;
         }
     }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
 }

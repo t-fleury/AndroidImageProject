@@ -2,9 +2,7 @@ package com.project.img.projectimage;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-
 import java.util.Arrays;
-
 import static android.graphics.Color.HSVToColor;
 import static android.graphics.Color.RGBToHSV;
 
@@ -12,13 +10,13 @@ import static android.graphics.Color.RGBToHSV;
  * Created by fleur on 25/02/2017.
  */
 
-public abstract class Filter{
+abstract class Filter{
 
-    public static void toNormal(Bitmap bmp, Bitmap bmp_initial) {
-        bmp = bmp_initial.copy(bmp_initial.getConfig(), true);
+    static Bitmap toNormal(Bitmap bmp) {
+        return bmp.copy(bmp.getConfig(), true);
     }
 
-    public static void toGray(Bitmap bmp) {
+    static Bitmap toGray(Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -33,9 +31,10 @@ public abstract class Filter{
             pixels[i] = Color.rgb(total, total, total);
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void toSepia(Bitmap bmp) {
+    static Bitmap toSepia(Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -59,9 +58,10 @@ public abstract class Filter{
             pixels[i] = Color.rgb(finalRed, finalGreen, finalBlue);
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void toRandomColor(Bitmap bmp) {
+    static Bitmap toRandomColor(Bitmap bmp) {
         double rm=(Math.random())*360;
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -80,9 +80,10 @@ public abstract class Filter{
             pixels[i] = HSVToColor(hsv);
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void toNotRandomColor(Bitmap bmp, int color) {
+    static Bitmap toNotRandomColor(Bitmap bmp, int color) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         float[] HSV = new float[width * height];
@@ -97,9 +98,10 @@ public abstract class Filter{
             pixels[i] = Color.HSVToColor(HSV);
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void ColorFilter(Bitmap bmp, int option) {
+    static Bitmap ColorFilter(Bitmap bmp, int option) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         float[] HSV = new float[width * height];
@@ -117,28 +119,29 @@ public abstract class Filter{
             }
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void changeLuminosity(Bitmap bmp, int value){
+    static Bitmap changeLuminosity(Bitmap bmp, int percentage){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         for (int i = 0; i < pixels.length; i++) {
             int o = pixels[i];
-            int blue = Color.blue(o)+value;
+            int blue = Color.blue(o) + Color.blue(o) * (percentage/100);
             if(blue>255)
                 blue=255;
             if(blue < 0)
                 blue = 0;
 
-            int red = Color.red(o)+value;
+            int red = Color.red(o) + Color.red(o) * (percentage/100);
             if(red>255)
                 red=255;
             if(red < 0)
                 red = 0;
 
-            int green = Color.green(o)+value;
+            int green = Color.green(o) + Color.green(o) * (percentage/100);
             if(green>255)
                 green=255;
             if(green < 0)
@@ -148,16 +151,17 @@ public abstract class Filter{
 
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void meanConvulation(int sizeMatrix, Bitmap bitmap){
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+    static Bitmap meanConvulation(int sizeMatrix, Bitmap bmp){
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
         int[] pixels = new int[width * height];
         int[] pixelMoyenneur = new int[width * height];
         int red=0, blue=0, green=0, x_pixelMatrix, y_pixelMatrix;
 
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
 
         for(int i = 0; i < pixelMoyenneur.length; i++)
         {
@@ -183,15 +187,16 @@ public abstract class Filter{
             pixelMoyenneur[i] = Color.rgb(red, green, blue);
         }
 
-        bitmap.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
+        bmp.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void medianConvulation(int sizeMatrix, Bitmap bitmap){
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+    static Bitmap medianConvulation(int sizeMatrix, Bitmap bmp){
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
         int[] pixels = new int[width * height];
         int[] pixelMoyenneur = new int[width * height];
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         int[] red= new int[sizeMatrix*sizeMatrix];
         int[] blue= new int[sizeMatrix*sizeMatrix];
         int[] green= new int[sizeMatrix*sizeMatrix];
@@ -224,15 +229,16 @@ public abstract class Filter{
             pixelMoyenneur[i] = Color.rgb(red[(sizeMatrix/2 + 1)], green[(sizeMatrix/2 + 1)], blue[(sizeMatrix/2 + 1)]);
         }
 
-        bitmap.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
+        bmp.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
+        return bmp;
     }
 
-    public static void laplcianConvolution(int[][] matrix, int sizeMatrix, Bitmap bitmap){
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+    static Bitmap laplcianConvolution(int[][] matrix, int sizeMatrix, Bitmap bmp){
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
         int[] pixels = new int[width * height];
         int[] laplacePixels = new int[width * height];
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         int[] red= new int[sizeMatrix*sizeMatrix];
         int[] blue= new int[sizeMatrix*sizeMatrix];
         int[] green= new int[sizeMatrix*sizeMatrix];
@@ -273,6 +279,7 @@ public abstract class Filter{
             laplacePixels[i] = Color.rgb(finalRed,finalGreen,finalBlue);
         }
 
-        bitmap.setPixels(laplacePixels, 0, width, 0, 0, width, height);
+        bmp.setPixels(laplacePixels, 0, width, 0, 0, width, height);
+        return bmp;
     }
 }
