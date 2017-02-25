@@ -17,7 +17,9 @@
         <item>Color filter</item>
         <item>Random color filter</item>
         <item>Keep a color</item>
-        <item>Convolution</item>
+        <item>Laplacian filter</item>
+        <item>Mean filter</item>
+        <item>Median filter</item>
     </string-array>
 
 </resources>

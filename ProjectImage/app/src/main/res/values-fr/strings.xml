@@ -17,7 +17,9 @@
         <item>Filtre couleur</item>
         <item>Filtre aléatoire couleur</item>
         <item>Garder une couleur</item>
-        <item>Convolution</item>
+        <item>Filtre laplcien</item>
+        <item>Filtre moyenneur</item>
+        <item>Filtre médian</item>
     </string-array>
 
 </resources>
