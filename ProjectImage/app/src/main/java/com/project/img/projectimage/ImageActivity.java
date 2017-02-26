@@ -27,6 +27,7 @@ public class ImageActivity extends AppCompatActivity {
         String mCurrentPhotoPath = intent.getStringExtra("Picture path");
         Bitmap picture_bm = BitmapFactory.decodeFile(mCurrentPhotoPath);
         //initialImage.setImageBitmap(picture_bm);
+        initialImage.setVisibility(View.INVISIBLE);
         mCustomImageView.setImageBitmap(picture_bm);
 
         Button filter_button = (Button) findViewById(R.id.filter_button);

@@ -12,11 +12,26 @@ import static android.graphics.Color.RGBToHSV;
 
 abstract class Filter{
 
+    final static private int[][] LAPLACE_FILTER1 = {{0, 1, 0},
+            {1,-4, 1},
+            {0, 1, 0}};
+    final static private int[][] LAPLACE_FILTER2 = {{1, 1, 1},
+            {1,-8, 1},
+            {1, 1, 1}};
+
+    private static Bitmap checkMutable(Bitmap bmp){
+        if(!bmp.isMutable()){
+            bmp = bmp.copy(bmp.getConfig(),true);
+        }
+        return bmp;
+    }
+
     static Bitmap toNormal(Bitmap bmp) {
         return bmp.copy(bmp.getConfig(), true);
     }
 
     static Bitmap toGray(Bitmap bmp) {
+        bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -35,6 +50,7 @@ abstract class Filter{
     }
 
     static Bitmap toSepia(Bitmap bmp) {
+        bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -62,6 +78,7 @@ abstract class Filter{
     }
 
     static Bitmap toRandomColor(Bitmap bmp) {
+        bmp = checkMutable(bmp);
         double rm=(Math.random())*360;
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -84,6 +101,7 @@ abstract class Filter{
     }
 
     static Bitmap toNotRandomColor(Bitmap bmp, int color) {
+        bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         float[] HSV = new float[width * height];
@@ -102,6 +120,7 @@ abstract class Filter{
     }
 
     static Bitmap ColorFilter(Bitmap bmp, int option) {
+        bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         float[] HSV = new float[width * height];
@@ -123,6 +142,7 @@ abstract class Filter{
     }
 
     static Bitmap changeLuminosity(Bitmap bmp, int percentage){
+        bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -155,6 +175,7 @@ abstract class Filter{
     }
 
     static Bitmap meanConvulation(int sizeMatrix, Bitmap bmp){
+        bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -192,6 +213,7 @@ abstract class Filter{
     }
 
     static Bitmap medianConvulation(int sizeMatrix, Bitmap bmp){
+        bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -233,22 +255,29 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap laplcianConvolution(int[][] matrix, int sizeMatrix, Bitmap bmp){
+    static Bitmap laplcianConvolution(int choiceMatrix, Bitmap bmp){
+        bmp = checkMutable(bmp);
+        int[][] matrix;
+        if(choiceMatrix == 1){
+            matrix = LAPLACE_FILTER1;
+        }else{
+            matrix = LAPLACE_FILTER2;
+        }
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
         int[] laplacePixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int[] red= new int[sizeMatrix*sizeMatrix];
-        int[] blue= new int[sizeMatrix*sizeMatrix];
-        int[] green= new int[sizeMatrix*sizeMatrix];
+        int[] red= new int[3*3];
+        int[] blue= new int[3*3];
+        int[] green= new int[3*3];
         int x_pixelMatrix, y_pixelMatrix;
         for(int i = 0; i < laplacePixels.length; i++)
         {
             x_pixelMatrix=i%width;
             y_pixelMatrix=i/width;
 
-            if(i <= width*(sizeMatrix/2) || i >= width * (height-(sizeMatrix/2)) || i % width < sizeMatrix/2  || i % width >= width-(sizeMatrix/2))
+            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2))
             {
                 red[0] = Color.red(pixels[i]);
                 green[0] = Color.green(pixels[i]);
@@ -257,8 +286,8 @@ abstract class Filter{
             else {
                 int index = 0;
                 int laplaceX = 0, laplaceY = 0;
-                for (int x = x_pixelMatrix -(sizeMatrix / 2); x <= x_pixelMatrix +(sizeMatrix / 2); x++) {
-                    for (int y = y_pixelMatrix - (sizeMatrix / 2); y <= y_pixelMatrix + (sizeMatrix / 2); y++) {
+                for (int x = x_pixelMatrix -(3 / 2); x <= x_pixelMatrix +(3 / 2); x++) {
+                    for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
                         red[index] = Color.red(pixels[x+y*width])*matrix[laplaceX][laplaceY];
                         green[index] = Color.green(pixels[x+y*width])*matrix[laplaceX][laplaceY];
                         blue[index] = Color.blue(pixels[x+y*width])*matrix[laplaceX][laplaceY];

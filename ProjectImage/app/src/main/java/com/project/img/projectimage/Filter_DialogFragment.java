@@ -6,10 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.widget.ImageView;
 
 /**
  * Created by fleur on 05/02/2017.
@@ -26,7 +23,6 @@ public class Filter_DialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int option) {
                         dialog.dismiss();
                         ImageActivity imageActivity = (ImageActivity) getActivity();
-                        Bitmap bitmap = imageActivity.getmCustomImageView().getBitmap();
                         SeekBarDialog seekBarDialog = new SeekBarDialog();
                         SeekBarColorDialog seekBarColorDialog = new SeekBarColorDialog();
                         switch (option){
@@ -39,27 +35,36 @@ public class Filter_DialogFragment extends DialogFragment {
                                 seekBarDialog.show(getFragmentManager(), "contrast");
                                 break;
                             case 2 :
-
+                                //TODO
                                 break;
                             case 3 :
-                                Filter.toGray(bitmap);
+                                imageActivity.getmCustomImageView().setImageBitmap(Filter.toGray(imageActivity.getmCustomImageView().getBitmap()));
                                 break;
                             case 4 :
-                                Filter.toSepia(bitmap);
+                                imageActivity.getmCustomImageView().setImageBitmap(Filter.toSepia(imageActivity.getmCustomImageView().getBitmap()));
                                 break;
                             case 5 :
                                 imageActivity.setChoice(true);
-                                seekBarColorDialog.show(getFragmentManager(), "contrast");
+                                seekBarColorDialog.show(getFragmentManager(), "notRandom");
                                 break;
                             case 6 :
-                                Filter.toRandomColor(bitmap);
+                                imageActivity.getmCustomImageView().setImageBitmap(Filter.toRandomColor(imageActivity.getmCustomImageView().getBitmap()));
                                 break;
                             case 7 :
                                 imageActivity.setChoice(false);
-                                seekBarColorDialog.show(getFragmentManager(), "contrast");
+                                seekBarColorDialog.show(getFragmentManager(), "keep");
                                 break;
                             case 8 :
-
+                                imageActivity.getmCustomImageView().setImageBitmap(Filter.laplcianConvolution(1, imageActivity.getmCustomImageView().getBitmap()));
+                                break;
+                            case 9 :
+                                imageActivity.getmCustomImageView().setImageBitmap(Filter.laplcianConvolution(2, imageActivity.getmCustomImageView().getBitmap()));
+                                break;
+                            case 10:
+                                //TODO
+                                break;
+                            case 11:
+                                //TODO
                                 break;
                         }
                     }
