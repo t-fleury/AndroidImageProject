@@ -14,7 +14,7 @@ public class SeekBarDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater layout = getActivity().getLayoutInflater();
-        builder.setTitle("Quel degré ?");
+        builder.setTitle(R.string.degree);
         builder.setView(layout.inflate(R.layout.seekbar_dialog,null));
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

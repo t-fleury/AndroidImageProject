@@ -18,7 +18,7 @@ public class SeekBarColorDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater layout = getActivity().getLayoutInflater();
-        builder.setTitle("Couleur ?");
+        builder.setTitle(R.string.color);
         builder.setView(layout.inflate(R.layout.seekbar_spectrum_dialog,null));
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

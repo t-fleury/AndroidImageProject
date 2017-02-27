@@ -5,6 +5,9 @@
     <string name="get_picture_gallery">Choisir une image depuis la Galerie</string>
     <string name="get_last_saved">Choisir la dernière image sauvegardée</string>
     <string name="filter">Filtres</string>
+    <string name="matrix">Taille de la matrice ?</string>
+    <string name="color">Quelle couleur ?</string>
+    <string name="degree">Quel degré ?</string>
     <string name="display">Afficher en taille réelle</string>
     <string name="reset_picture">Réinitialiser l\'image</string>
 
@@ -21,6 +24,14 @@
         <item>Filtre laplcien 8-cx</item>
         <item>Filtre moyenneur</item>
         <item>Filtre médian</item>
+        <item>Filtre gaussien</item>
+        <item>Filtre sobel</item>
+    </string-array>
+
+    <string-array name="matrix_size">
+        <item>3 par 3</item>
+        <item>5 par 5</item>
+        <item>7 par 7</item>
     </string-array>
 
 </resources>

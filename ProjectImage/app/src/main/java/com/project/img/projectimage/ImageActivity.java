@@ -11,23 +11,20 @@ import android.widget.ImageView;
 
 public class ImageActivity extends AppCompatActivity {
 
-    private ImageView initialImage;
     private CustomImageView mCustomImageView;
     private boolean choice;
+    private int convolutionChoise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
 
-        initialImage = (ImageView) findViewById(R.id.initial_image);
         mCustomImageView = (CustomImageView) findViewById(R.id.customImageView);
 
         Intent intent = getIntent();
         String mCurrentPhotoPath = intent.getStringExtra("Picture path");
         Bitmap picture_bm = BitmapFactory.decodeFile(mCurrentPhotoPath);
-        //initialImage.setImageBitmap(picture_bm);
-        initialImage.setVisibility(View.INVISIBLE);
         mCustomImageView.setImageBitmap(picture_bm);
 
         Button filter_button = (Button) findViewById(R.id.filter_button);
@@ -50,5 +47,13 @@ public class ImageActivity extends AppCompatActivity {
 
     public void setChoice(boolean choice) {
         this.choice = choice;
+    }
+
+    public int getConvolutionChoise() {
+        return convolutionChoise;
+    }
+
+    public void setConvolutionChoise(int convolutionChoise) {
+        this.convolutionChoise = convolutionChoise;
     }
 }

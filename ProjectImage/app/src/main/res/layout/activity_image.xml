@@ -18,14 +18,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/initial_image"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@+id/filter_button" />
-
         <com.project.img.projectimage.CustomImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

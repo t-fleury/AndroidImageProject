@@ -5,6 +5,9 @@
     <string name="get_picture_gallery">Get a picture from Gallery</string>
     <string name="get_last_saved">Get the last saved picture</string>
     <string name="filter">Filters</string>
+    <string name="matrix">Matrix size ?</string>
+    <string name="color">Which color ?</string>
+    <string name="degree">Which degree?</string>
     <string name="display">Display full size</string>
     <string name="reset_picture">Reset picture</string>
 
@@ -21,6 +24,14 @@
         <item>Laplacian filter 8-cx</item>
         <item>Mean filter</item>
         <item>Median filter</item>
+        <item>Gaussian filter</item>
+        <item>Sobel filter</item>
+    </string-array>
+
+    <string-array name="matrix_size">
+        <item>3 by 3</item>
+        <item>5 by 5</item>
+        <item>7 by 7</item>
     </string-array>
 
 </resources>
