@@ -20,9 +20,9 @@ import android.widget.ImageView;
 
 public class CustomImageView extends ImageView {
 
-    private Drawable drawable;
     private Bitmap bitmap;
-    private int bmWidth,bmHeight, drawableWidth, drawableHeight;
+
+    private int bmWidth, bmHeight, drawableWidth, drawableHeight;
 
     private static float MIN_ZOOM = 1f;
     private static float MAX_ZOOM = 5f;
@@ -45,35 +45,34 @@ public class CustomImageView extends ImageView {
     private float pivotPointY = 0f;
     private ScaleGestureDetector detector;
 
-    public CustomImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public CustomImageView(Context context, Bitmap bitmap) {
+        super(context);
+        init(bitmap);
         detector = new ScaleGestureDetector(getContext(), new ScaleListener());
     }
 
-    @Override
-    public void setImageBitmap(Bitmap bm) {
-        super.setImageBitmap(bm);
-        bitmap = ((BitmapDrawable)getDrawable()).getBitmap();
-        drawable = getDrawable();
+    public CustomImageView(Context context, AttributeSet attrs, Bitmap bitmap) {
+        super(context, attrs);
+        init(bitmap);
+        detector = new ScaleGestureDetector(getContext(), new ScaleListener());
+    }
+
+    public CustomImageView(Context context, AttributeSet attrs, int defStyleAttr, Bitmap bitmap) {
+        super(context, attrs, defStyleAttr);
+        init(bitmap);
+        detector = new ScaleGestureDetector(getContext(), new ScaleListener());
+    }
+
+    private void init(Bitmap bitmap){
+        this.bitmap = bitmap;
 
         bmWidth = bitmap.getWidth();
         bmHeight = bitmap.getHeight();
-        drawableWidth = getWidth();
-        drawableHeight = getHeight();
 
-        // set maximum scroll amount (based on center of image)
-        int maxX = (int)((bmWidth / 2) - (drawableWidth / 2));
-        int maxY = (int)((bmHeight / 2) - (drawableHeight / 2));
-
-        // set scroll limits
-        maxLeft = (maxX * -1);
-        maxRight = maxX;
-        maxTop = (maxY * -1);
-        maxBottom = maxY;
+        drawableWidth = this.getWidth();
+        drawableHeight = this.getHeight();
 
     }
-
-
 
 
     @Override
@@ -133,6 +132,7 @@ public class CustomImageView extends ImageView {
                     if (totalX > maxRight)
                     {
                         scrollByX = maxRight - (totalX - scrollByX);
+                        //scrollByX = maxRight;
                         totalX = maxRight;
                     }
                 }
@@ -214,9 +214,17 @@ public class CustomImageView extends ImageView {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.save();
+        if (drawableWidth == 0 && drawableHeight == 0) {
+            drawableWidth = this.getWidth();
+            drawableHeight = this.getHeight();
 
-        //canvas.translate(scrollByX, scrollByY);
+            maxLeft = 0;
+            maxRight = bmWidth - drawableWidth;
+            maxTop = 0;
+            maxBottom = bmHeight - drawableHeight;
+        }
+
+        canvas.save();
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleFactor, scaleFactor, pivotPointX,
@@ -243,10 +251,6 @@ public class CustomImageView extends ImageView {
 
     public Bitmap getBitmap() {
         return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
     }
 
 }

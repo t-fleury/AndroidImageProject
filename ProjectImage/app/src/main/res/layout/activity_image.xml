@@ -16,9 +16,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:id="@+id/mainLayout">
 
-        <com.project.img.projectimage.CustomImageView
+        <!--<com.project.img.projectimage.CustomImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/customImageView"
@@ -26,7 +27,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_above="@+id/filter_button"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"/>-->
 
         <Button
             android:text="@string/filter"
