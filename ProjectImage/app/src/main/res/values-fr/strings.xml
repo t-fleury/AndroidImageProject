@@ -8,7 +8,7 @@
     <string name="matrix">Taille de la matrice ?</string>
     <string name="color">Quelle couleur ?</string>
     <string name="degree">Quel degré ?</string>
-    <string name="display">Afficher en taille réelle</string>
+    <string name="display_scaled">Afficher l\'image mise à l\'échelle</string>
     <string name="reset_picture">Réinitialiser l\'image</string>
 
     <string-array name="filter_name">
@@ -33,5 +33,8 @@
         <item>5 par 5</item>
         <item>7 par 7</item>
     </string-array>
+    <string name="save_option">Sauvegarder l\'image</string>
+    <string name="display_full_size">Afficher en taille réelle</string>
+    <string name="undo_option">Annuler le dernier traitement</string>
 
 </resources>

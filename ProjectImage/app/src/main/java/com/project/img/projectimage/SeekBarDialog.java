@@ -27,7 +27,7 @@ public class SeekBarDialog extends DialogFragment {
                 }
                 ImageActivity imageActivity = (ImageActivity) getActivity();
                 if (imageActivity.isChoice()){
-                    imageActivity.getmCustomImageView().setImageBitmap(Filter.changeLuminosity(imageActivity.getmCustomImageView().getBitmap(),percentage));
+                    imageActivity.setPicture(Filter.changeLuminosity(imageActivity.getPicture(), percentage));
                 }else{
                     //TODO
                 }

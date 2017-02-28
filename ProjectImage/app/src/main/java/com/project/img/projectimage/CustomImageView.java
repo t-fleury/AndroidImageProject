@@ -74,6 +74,11 @@ public class CustomImageView extends ImageView {
 
     }
 
+    public void setBitmap(Bitmap bitmap){
+        this.bitmap = bitmap;
+        postInvalidate();
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {

@@ -8,7 +8,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 
 
-public class MatrixChoise_DialogFragment extends DialogFragment {
+public class MatrixChoice_DialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -19,12 +19,12 @@ public class MatrixChoise_DialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ImageActivity imageActivity = (ImageActivity) getActivity();
-                        switch (imageActivity.getConvolutionChoise()){
+                        switch (imageActivity.getConvolutionChoice()){
                             case 0 :
-                                imageActivity.getmCustomImageView().setImageBitmap(Filter.meanConvulation((2*(which+1)+1),imageActivity.getmCustomImageView().getBitmap()));
+                                imageActivity.setPicture(Filter.meanConvulation((2*(which+1)+1), imageActivity.getPicture()));
                                 break;
                             case 1 :
-                                imageActivity.getmCustomImageView().setImageBitmap(Filter.medianConvulation((2*(which+1)+1),imageActivity.getmCustomImageView().getBitmap()));
+                                imageActivity.setPicture(Filter.medianConvulation((2*(which+1)+1), imageActivity.getPicture()));
                                 break;
                             case 2 :
                                 //TODO Gaussian filter

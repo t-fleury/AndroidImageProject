@@ -27,9 +27,9 @@ public class SeekBarColorDialog extends DialogFragment {
                 SeekBar value = (SeekBar) ((AlertDialog) dialog).findViewById(R.id.choix);
                 ImageActivity imageActivity = (ImageActivity) getActivity();
                 if (imageActivity.isChoice()){
-                    imageActivity.getmCustomImageView().setImageBitmap(Filter.toNotRandomColor(imageActivity.getmCustomImageView().getBitmap(),value.getProgress()));
+                    imageActivity.setPicture(Filter.toNotRandomColor(imageActivity.getPicture(), value.getProgress()));
                 }else{
-                    imageActivity.getmCustomImageView().setImageBitmap(Filter.ColorFilter(imageActivity.getmCustomImageView().getBitmap(),value.getProgress()));
+                    imageActivity.setPicture(Filter.ColorFilter(imageActivity.getPicture(), value.getProgress()));
                 }
             }
         });

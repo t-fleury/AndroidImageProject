@@ -8,8 +8,10 @@
     <string name="matrix">Matrix size ?</string>
     <string name="color">Which color ?</string>
     <string name="degree">Which degree?</string>
-    <string name="display">Display full size</string>
+    <string name="display_full_size">Display full size</string>
+    <string name="display_scaled">Display scaled size</string>
     <string name="reset_picture">Reset picture</string>
+    <string name="save_option">Save picture</string>
 
     <string-array name="filter_name">
         <item>Set luminosity</item>
@@ -33,5 +35,6 @@
         <item>5 by 5</item>
         <item>7 by 7</item>
     </string-array>
+    <string name="undo_option">Undo last processing</string>
 
 </resources>
