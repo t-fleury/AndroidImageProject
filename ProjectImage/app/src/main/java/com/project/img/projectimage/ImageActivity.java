@@ -96,13 +96,16 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     public Bitmap getPicture() {
-        return picture;
+        return picture.copy(picture.getConfig(), true);
     }
 
     public void setPicture(Bitmap pic) {
+        Log.d("bitmap toS", picture.toString());
+        Log.d("arg bm toS", pic.toString());
         saved_pictures.add(picture.copy(picture.getConfig(), true));
         Log.d("V size add", Integer.toString(saved_pictures.size()));
         this.picture = pic;
+        Log.d("bitmap toS", picture.toString());
         mCustomImageView.setBitmap(picture);
         scaledDrawable.setImageBitmap(picture);
         invalidateOptionsMenu();
@@ -126,10 +129,14 @@ public class ImageActivity extends AppCompatActivity {
                 //TODO
                 return true;
             case R.id.undo_option:
-                this.picture = saved_pictures.lastElement();
+                Bitmap bitmap = saved_pictures.lastElement();
+                Log.d("bitmap toS", picture.toString());
+                this.picture = bitmap;
+                Log.d("bitmap toS", picture.toString());
                 mCustomImageView.setBitmap(picture);
                 scaledDrawable.setImageBitmap(picture);
-                saved_pictures.remove(saved_pictures.size()-1);
+                int last_index = saved_pictures.size() - 1;
+                saved_pictures.remove(last_index);
                 Log.d("V size rm", Integer.toString(saved_pictures.size()));
                 invalidateOptionsMenu();
                 return true;
