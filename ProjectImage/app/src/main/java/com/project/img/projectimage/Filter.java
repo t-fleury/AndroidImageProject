@@ -26,10 +26,6 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap toNormal(Bitmap bmp) {
-        return bmp.copy(bmp.getConfig(), true);
-    }
-
     static Bitmap toGray(Bitmap bmp) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
@@ -309,6 +305,54 @@ abstract class Filter{
         }
 
         bmp.setPixels(laplacePixels, 0, width, 0, 0, width, height);
+        return bmp;
+    }
+
+    static Bitmap egalizationConstrast(Bitmap bmp) {
+        int size = bmp.getWidth() * bmp.getHeight();
+        int pixelsColor[] = new int[size];
+        int pixelsColorRGB[][] = new int[size][3];
+        int pixelsColorNew[] = new int[size];
+        int pixelsShadesOfGrey[] = new int[size];
+        int histogramShadesOfGrey[] = new int[256];
+        int cumulateHistogramShadesOfGrey[] = new int[256];
+        int tempColor;
+        int red, green, blue;
+
+        bmp.getPixels(pixelsColor, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+
+        for (int i = 0; i < size; i++) {
+            pixelsColorRGB[i][0] = Color.red(pixelsColor[i]);
+            pixelsColorRGB[i][1] = Color.green(pixelsColor[i]);
+            pixelsColorRGB[i][2] = Color.blue(pixelsColor[i]);
+        }
+
+        Bitmap greyImage = toGray(bmp);
+        greyImage.getPixels(pixelsShadesOfGrey, 0, greyImage.getWidth(), 0, 0, greyImage.getWidth(), greyImage.getHeight());
+
+        for (int i = 0; i <= 255; i++) {
+            histogramShadesOfGrey[i] = 0;
+        }
+
+        for (int i = 0; i < size; i++) {
+            tempColor = Color.red(pixelsShadesOfGrey[i]);
+            histogramShadesOfGrey[tempColor]++;
+        }
+
+        cumulateHistogramShadesOfGrey[0] = histogramShadesOfGrey[0];
+
+        for (int i = 1; i <= 255; i++) {
+            cumulateHistogramShadesOfGrey[i] = cumulateHistogramShadesOfGrey[i - 1] + histogramShadesOfGrey[i];
+        }
+
+        for (int i = 0; i < size; i++) {
+            red = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][0]] * 255) / size;
+            green = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][1]] * 255) / size;
+            blue = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][2]] * 255) / size;
+            pixelsColorNew[i] = Color.rgb(red, green, blue);
+        }
+
+        bmp.setPixels(pixelsColorNew, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         return bmp;
     }
 }
