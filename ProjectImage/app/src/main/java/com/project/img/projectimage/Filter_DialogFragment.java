@@ -35,7 +35,7 @@ public class Filter_DialogFragment extends DialogFragment {
                                 seekBarDialog.show(getFragmentManager(), "contrast");
                                 break;
                             case 2 :
-                                //TODO
+                                imageActivity.setPicture(Filter.egalizationConstrast(imageActivity.getPicture()));
                                 break;
                             case 3 :
                                 imageActivity.setPicture(Filter.toGray(imageActivity.getPicture()));
