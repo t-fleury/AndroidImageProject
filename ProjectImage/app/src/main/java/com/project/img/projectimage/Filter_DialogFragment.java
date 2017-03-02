@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.res.Resources;;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -55,10 +55,10 @@ public class Filter_DialogFragment extends DialogFragment {
                                 seekBarColorDialog.show(getFragmentManager(), "keep");
                                 break;
                             case 8 :
-                                imageActivity.setPicture(Filter.laplcianConvolution(1, imageActivity.getPicture()));
+                                imageActivity.setPicture(Filter.laplacianConvolution(1, imageActivity.getPicture()));
                                 break;
                             case 9 :
-                                imageActivity.setPicture(Filter.laplcianConvolution(2, imageActivity.getPicture()));
+                                imageActivity.setPicture(Filter.laplacianConvolution(2, imageActivity.getPicture()));
                                 break;
                             case 10:
                                 imageActivity.setConvolutionChoice(1);

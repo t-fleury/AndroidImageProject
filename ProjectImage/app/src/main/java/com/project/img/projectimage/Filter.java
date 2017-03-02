@@ -2,6 +2,8 @@ package com.project.img.projectimage;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
+
 import java.util.Arrays;
 import static android.graphics.Color.HSVToColor;
 import static android.graphics.Color.RGBToHSV;
@@ -146,35 +148,35 @@ abstract class Filter{
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
+        float[] hsv = new float[3];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         for (int i = 0; i < pixels.length; i++) {
             int o = pixels[i];
-            int blue = Color.blue(o) + Color.blue(o) * (percentage/100);
+            int blue = Color.blue(o) + percentage;
             if(blue>255)
                 blue=255;
             if(blue < 0)
                 blue = 0;
 
-            int red = Color.red(o) + Color.red(o) * (percentage/100);
+            int red = Color.red(o) + percentage;
             if(red>255)
                 red=255;
             if(red < 0)
                 red = 0;
 
-            int green = Color.green(o) + Color.green(o) * (percentage/100);
+            int green = Color.green(o) + percentage;
             if(green>255)
                 green=255;
             if(green < 0)
                 green = 0;
 
             pixels[i] = Color.rgb(red, green, blue);
-
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
         return bmp;
     }
 
-    static Bitmap meanConvulation(int sizeMatrix, Bitmap bmp){
+    static Bitmap meanConvolution(int sizeMatrix, Bitmap bmp){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -212,7 +214,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap medianConvulation(int sizeMatrix, Bitmap bmp){
+    static Bitmap medianConvolution(int sizeMatrix, Bitmap bmp){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -255,7 +257,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap laplcianConvolution(int choiceMatrix, Bitmap bmp){
+    static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp){
         bmp = checkMutable(bmp);
         int[][] matrix;
         if(choiceMatrix == 1){

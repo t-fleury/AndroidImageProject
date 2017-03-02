@@ -1,8 +1,11 @@
 package com.project.img.projectimage;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +31,7 @@ public class ImageActivity extends AppCompatActivity {
     private Button display_fs_button;
     private Bitmap picture;
     private Vector<Bitmap> saved_pictures;
+    private ContentResolver contentResolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,8 @@ public class ImageActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         String mCurrentPhotoPath = intent.getStringExtra("Picture path");
+
+        contentResolver = this.getContentResolver();
 
         picture = BitmapFactory.decodeFile(mCurrentPhotoPath);
 
@@ -126,7 +132,8 @@ public class ImageActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_option:
-                //TODO
+                String res = MediaStore.Images.Media.insertImage(contentResolver, picture.copy(picture.getConfig(), true), "", "");
+                Log.d("insert res", res);
                 return true;
             case R.id.undo_option:
                 Bitmap bitmap = saved_pictures.lastElement();

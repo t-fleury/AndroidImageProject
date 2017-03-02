@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.SeekBar;
 
@@ -22,14 +23,11 @@ public class SeekBarDialog extends DialogFragment {
                 dialog.dismiss();
                 SeekBar value = (SeekBar) ((AlertDialog) dialog).findViewById(R.id.choix);
                 int percentage = value.getProgress();
-                if(percentage < 50){
-                    percentage = -percentage;
-                }
+                Log.d("lum val", Integer.toString(percentage));
+                percentage -= 50;
                 ImageActivity imageActivity = (ImageActivity) getActivity();
                 if (imageActivity.isChoice()){
                     imageActivity.setPicture(Filter.changeLuminosity(imageActivity.getPicture(), percentage));
-                }else{
-                    //TODO
                 }
             }
         });
