@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/save_option"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="@string/save_option" />
+    <item
+        android:title="@string/undo_option"
+        android:id="@+id/undo_option"
+        android:icon="@android:drawable/ic_menu_revert"
+        android:visible="false" />
+</menu>
