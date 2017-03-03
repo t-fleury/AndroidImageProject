@@ -105,79 +105,70 @@ public class CustomImageView extends ImageView {
                 scrollByX = (int)(downX - currentX);
                 scrollByY = (int)(downY - currentY);
 
+
                 // scrolling to left side of image (pic moving to the right)
-                if (currentX > downX)
-                {
-                    if (totalX == maxLeft)
-                    {
+                if (currentX > downX) {
+                    if (totalX == maxLeft) {
                         scrollByX = 0;
                     }
-                    if (totalX > maxLeft)
-                    {
+                    if (totalX > maxLeft) {
                         totalX = totalX + scrollByX;
                     }
-                    if (totalX < maxLeft)
-                    {
+                    if (totalX < maxLeft) {
                         scrollByX = maxLeft - (totalX - scrollByX);
                         totalX = maxLeft;
                     }
                 }
 
                 // scrolling to right side of image (pic moving to the left)
-                if (currentX < downX)
-                {
-                    if (totalX == maxRight)
-                    {
+                if (currentX < downX) {
+                    if (totalX == maxRight) {
                         scrollByX = 0;
                     }
-                    if (totalX < maxRight)
-                    {
+                    if (totalX < maxRight) {
                         totalX = totalX + scrollByX;
                     }
-                    if (totalX > maxRight)
-                    {
+                    if (totalX > maxRight) {
                         scrollByX = maxRight - (totalX - scrollByX);
-                        //scrollByX = maxRight;
                         totalX = maxRight;
                     }
                 }
 
                 // scrolling to top of image (pic moving to the bottom)
-                if (currentY > downY)
-                {
-                    if (totalY == maxTop)
-                    {
+                if (currentY > downY) {
+                    if (totalY == maxTop) {
                         scrollByY = 0;
                     }
-                    if (totalY > maxTop)
-                    {
+                    if (totalY > maxTop) {
                         totalY = totalY + scrollByY;
                     }
-                    if (totalY < maxTop)
-                    {
+                    if (totalY < maxTop) {
                         scrollByY = maxTop - (totalY - scrollByY);
                         totalY = maxTop;
                     }
                 }
 
                 // scrolling to bottom of image (pic moving to the top)
-                if (currentY < downY)
-                {
-                    if (totalY == maxBottom)
-                    {
+                if (currentY < downY) {
+                    if (totalY == maxBottom) {
                         scrollByY = 0;
                     }
-                    if (totalY < maxBottom)
-                    {
+                    if (totalY < maxBottom) {
                         totalY = totalY + scrollByY;
                     }
-                    if (totalY > maxBottom)
-                    {
+                    if (totalY > maxBottom) {
                         scrollByY = maxBottom - (totalY - scrollByY);
                         totalY = maxBottom;
                     }
                 }
 
+                if (bmWidth < drawableWidth){
+                    scrollByX = 0;
+                    totalX = 0;
+                } else if (bmHeight < drawableHeight){
+                    scrollByY = 0;
+                    totalY = 0;
+                }
                 scrollBy(scrollByX, scrollByY);
                 downX = currentX;
                 downY = currentY;
