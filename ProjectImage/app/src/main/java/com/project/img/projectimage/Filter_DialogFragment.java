@@ -10,8 +10,6 @@ import android.os.Bundle;
 
 public class Filter_DialogFragment extends DialogFragment {
 
-    private Bitmap bitmap;
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
        Resources res = getResources();
@@ -21,7 +19,6 @@ public class Filter_DialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int option) {
                         dialog.dismiss();
                         ImageActivity imageActivity = (ImageActivity) getActivity();
-                        bitmap = imageActivity.getPicture();
                         SeekBarDialog seekBarDialog = new SeekBarDialog();
                         SeekBarColorDialog seekBarColorDialog = new SeekBarColorDialog();
                         MatrixChoice_DialogFragment matrixChoise_dialogFragment = new MatrixChoice_DialogFragment();
@@ -35,7 +32,7 @@ public class Filter_DialogFragment extends DialogFragment {
                                 seekBarDialog.show(getFragmentManager(), "contrast");
                                 break;
                             case 2 :
-                                imageActivity.setPicture(Filter.egalizationConstrast(imageActivity.getPicture()));
+                                imageActivity.setPicture(Filter.egalizationHistogram(imageActivity.getPicture()));
                                 break;
                             case 3 :
                                 imageActivity.setPicture(Filter.toGray(imageActivity.getPicture()));
@@ -69,10 +66,12 @@ public class Filter_DialogFragment extends DialogFragment {
                                 matrixChoise_dialogFragment.show(getFragmentManager(),"median");
                                 break;
                             case 12:
-                                //TODO
+                                imageActivity.setConvolutionChoice(3);
+                                matrixChoise_dialogFragment.show(getFragmentManager(),"median");
                                 break;
                             case 13:
-                                //TODO
+                                imageActivity.setConvolutionChoice(4);
+                                matrixChoise_dialogFragment.show(getFragmentManager(),"median");
                                 break;
                         }
                     }

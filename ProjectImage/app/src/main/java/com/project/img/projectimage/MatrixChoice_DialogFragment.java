@@ -20,16 +20,16 @@ public class MatrixChoice_DialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         ImageActivity imageActivity = (ImageActivity) getActivity();
                         switch (imageActivity.getConvolutionChoice()){
-                            case 0 :
+                            case 1 :
                                 imageActivity.setPicture(Filter.meanConvolution((2*(which+1)+1), imageActivity.getPicture()));
                                 break;
-                            case 1 :
+                            case 2 :
                                 imageActivity.setPicture(Filter.medianConvolution((2*(which+1)+1), imageActivity.getPicture()));
                                 break;
-                            case 2 :
+                            case 3 :
                                 //TODO Gaussian filter
                                 break;
-                            case 3 :
+                            case 4 :
                                 //TODO Sobel filter
                                 break;
                         }
