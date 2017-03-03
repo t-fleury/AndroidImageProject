@@ -148,19 +148,19 @@ abstract class Filter{
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         for (int i = 0; i < pixels.length; i++) {
             int o = pixels[i];
-            int blue = Color.blue(o) + percentage;
+            int blue = Color.blue(o) + percentage * Color.blue(o);
             if(blue>255)
                 blue=255;
             if(blue < 0)
                 blue = 0;
 
-            int red = Color.red(o) + percentage;
+            int red = Color.red(o) + percentage * Color.red(o);
             if(red>255)
                 red=255;
             if(red < 0)
                 red = 0;
 
-            int green = Color.green(o) + percentage;
+            int green = Color.green(o) + percentage * Color.green(o);
             if(green>255)
                 green=255;
             if(green < 0)
@@ -310,7 +310,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap egalizationConstrast(Bitmap bmp) {
+    static Bitmap egalizationHistogram(Bitmap bmp) {
         int size = bmp.getWidth() * bmp.getHeight();
         int pixelsColor[] = new int[size];
         int pixelsColorRGB[][] = new int[size][3];
