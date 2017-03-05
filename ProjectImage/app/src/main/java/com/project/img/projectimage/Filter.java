@@ -390,21 +390,21 @@ abstract class Filter{
 
     private static double[][] generateGaussianMatrix(int matrixSize, double sigma){
         double[][] gaussianMatrix = new double[matrixSize][matrixSize];
-        double r, s = 2.0 * sigma * sigma;
 
         double sum = 0.0;
         int shift = matrixSize / 2;
-
-        for (int x = -shift; x <= shift; x++)
+        for (int x = -shift; x <= shift; x++) {
             for (int y = -shift; y <= shift; y++) {
-                r = Math.sqrt(x * x + y * y);
-                gaussianMatrix[x + shift][y + shift] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
+                gaussianMatrix[x + shift][y + shift] = (Math.exp((-(Math.pow(x, 2) + Math.pow(y, 2))) / (2 * Math.pow(sigma,2)))) / (2*Math.PI*Math.pow(sigma,2));
                 sum += gaussianMatrix[x + shift][y + shift];
             }
-
-        for (int i = 0; i < matrixSize; ++i)
-            for (int j = 0; j < matrixSize; ++j)
+        }
+        for (int i = 0; i < matrixSize; ++i) {
+            for (int j = 0; j < matrixSize; ++j) {
                 gaussianMatrix[i][j] /= sum;
+                System.out.println(gaussianMatrix[i][j]);
+            }
+        }
         return gaussianMatrix;
     }
 
@@ -418,14 +418,11 @@ abstract class Filter{
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         int red = 0, blue = 0, green = 0;
         int x_pixelMatrix, y_pixelMatrix;
-        for(int i = 0; i < gaussianPixels.length; i++)
-        {
+        for(int i = 0; i < gaussianPixels.length; i++) {
             x_pixelMatrix=i%width;
             y_pixelMatrix=i/width;
 
-            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2))
-            {
-
+            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2)) {
                 red = Color.red(pixels[i]);
                 green = Color.green(pixels[i]);
                 blue = Color.blue(pixels[i]);
@@ -462,22 +459,20 @@ abstract class Filter{
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         int red = 0, blue = 0, green = 0;
         int x_pixelMatrix, y_pixelMatrix;
-        for(int i = 0; i < sobelPixels.length; i++)
-        {
+        for(int i = 0; i < sobelPixels.length; i++) {
             x_pixelMatrix=i%width;
             y_pixelMatrix=i/width;
 
-            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2))
-            {
+            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2)) {
                 red = Color.red(pixels[i]);
                 green = Color.green(pixels[i]);
                 blue = Color.blue(pixels[i]);
             }
             else {
                 int sobelI = 0;
-                int sobelX = 0, sobelY = 0;
                 int[][] matrix = SOBEL_X_FILTER;
                 while (sobelI < 2) {
+                    int sobelX = 0, sobelY = 0;
                     for (int x = x_pixelMatrix - (3 / 2); x <= x_pixelMatrix + (3 / 2); x++) {
                         for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
                             red += Color.red(pixels[x + y * width]) * matrix[sobelX][sobelY];
@@ -494,7 +489,6 @@ abstract class Filter{
                     matrix = SOBEL_Y_FILTER;
                 }
             }
-
             sobelPixels[i] = Color.rgb(red,green,blue);
         }
 
