@@ -388,16 +388,81 @@ abstract class Filter{
         return bmp;
     }
 
+    private static double[][] generateGaussianMatrix(int matrixSize, double sigma){
+        double[][] gaussianMatrix = new double[matrixSize][matrixSize];
+        double r, s = 2.0 * sigma * sigma;
+
+        double sum = 0.0;
+        int shift = matrixSize / 2;
+
+        for (int x = -shift; x <= shift; x++)
+            for (int y = -shift; y <= shift; y++) {
+                r = Math.sqrt(x * x + y * y);
+                gaussianMatrix[x + shift][y + shift] = (Math.exp(-(r * r) / s)) / (Math.PI * s);
+                sum += gaussianMatrix[x + shift][y + shift];
+            }
+
+        for (int i = 0; i < matrixSize; ++i)
+            for (int j = 0; j < matrixSize; ++j)
+                gaussianMatrix[i][j] /= sum;
+        return gaussianMatrix;
+    }
+
+    static Bitmap gaussianConvolution(int sizeMatrix, Bitmap bmp){
+        bmp = checkMutable(bmp);
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        double[][] matrix = generateGaussianMatrix(sizeMatrix, 1.0);
+        int[] pixels = new int[width * height];
+        int[] gaussianPixels = new int[width * height];
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+        int red = 0, blue = 0, green = 0;
+        int x_pixelMatrix, y_pixelMatrix;
+        for(int i = 0; i < gaussianPixels.length; i++)
+        {
+            x_pixelMatrix=i%width;
+            y_pixelMatrix=i/width;
+
+            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2))
+            {
+
+                red = Color.red(pixels[i]);
+                green = Color.green(pixels[i]);
+                blue = Color.blue(pixels[i]);
+            }
+            else {
+                int gaussianX = 0, gaussianY = 0;
+                for (int x = x_pixelMatrix - (3 / 2); x <= x_pixelMatrix + (3 / 2); x++) {
+                    for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
+                        red += Color.red(pixels[x + y * width]) * matrix[gaussianX][gaussianY];
+                        green += Color.green(pixels[x + y * width]) * matrix[gaussianX][gaussianY];
+                        blue += Color.blue(pixels[x + y * width]) * matrix[gaussianX][gaussianY];
+                        gaussianY++;
+                        if (gaussianY == 3) {
+                            gaussianX++;
+                            gaussianY = 0;
+                        }
+                    }
+                }
+            }
+
+            gaussianPixels[i] = Color.rgb(red,green,blue);
+        }
+
+        bmp.setPixels(gaussianPixels, 0, width, 0, 0, width, height);
+        return bmp;
+    }
+
     static Bitmap sobelConvolution(Bitmap bmp){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
-        int[] laplacePixels = new int[width * height];
+        int[] sobelPixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         int red = 0, blue = 0, green = 0;
         int x_pixelMatrix, y_pixelMatrix;
-        for(int i = 0; i < laplacePixels.length; i++)
+        for(int i = 0; i < sobelPixels.length; i++)
         {
             x_pixelMatrix=i%width;
             y_pixelMatrix=i/width;
@@ -430,10 +495,10 @@ abstract class Filter{
                 }
             }
 
-            laplacePixels[i] = Color.rgb(red,green,blue);
+            sobelPixels[i] = Color.rgb(red,green,blue);
         }
 
-        bmp.setPixels(laplacePixels, 0, width, 0, 0, width, height);
+        bmp.setPixels(sobelPixels, 0, width, 0, 0, width, height);
         return bmp;
     }
 }

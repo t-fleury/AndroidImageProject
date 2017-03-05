@@ -27,7 +27,7 @@ public class MatrixChoice_DialogFragment extends DialogFragment {
                                 imageActivity.setPicture(Filter.medianConvolution((2*(which+1)+1), imageActivity.getPicture()));
                                 break;
                             case 3 :
-                                //TODO Gaussian filter
+                                imageActivity.setPicture(Filter.gaussianConvolution((2*(which+1)+1), imageActivity.getPicture()));
                                 break;
                         }
                     }
