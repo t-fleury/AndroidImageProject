@@ -8,23 +8,94 @@ import java.util.Arrays;
 import static android.graphics.Color.HSVToColor;
 import static android.graphics.Color.RGBToHSV;
 
-/**
- * Created by fleur on 25/02/2017.
- */
-
 abstract class Filter{
 
     final static private int[][] LAPLACE_FILTER1 = {{0, 1, 0},
-            {1,-4, 1},
-            {0, 1, 0}};
+                                                    {1,-4, 1},
+                                                    {0, 1, 0}};
     final static private int[][] LAPLACE_FILTER2 = {{1, 1, 1},
-            {1,-8, 1},
-            {1, 1, 1}};
+                                                    {1,-8, 1},
+                                                    {1, 1, 1}};
+
+    final static private int[][] SOBEL_X_FILTER = {{-1,0,1},
+                                                   {-2,0,2},
+                                                   {-1,0,1}};
+
+    final static private int[][] SOBEL_Y_FILTER = {{-1,-2,-1},
+                                                   { 0, 0, 0},
+                                                   {-1,-2,-1}};
 
     private static Bitmap checkMutable(Bitmap bmp){
         if(!bmp.isMutable()){
             bmp = bmp.copy(bmp.getConfig(),true);
         }
+        return bmp;
+    }
+
+    static Bitmap changeLuminosity(Bitmap bmp, int percentage){
+        bmp = checkMutable(bmp);
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        int[] pixels = new int[width * height];
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+        for (int i = 0; i < pixels.length; i++) {
+            int o = pixels[i];
+            int blue = Color.blue(o) + percentage;
+            if(blue>255)
+                blue=255;
+            if(blue < 0)
+                blue = 0;
+
+            int red = Color.red(o) + percentage;
+            if(red>255)
+                red=255;
+            if(red < 0)
+                red = 0;
+
+            int green = Color.green(o) + percentage;
+            if(green>255)
+                green=255;
+            if(green < 0)
+                green = 0;
+
+            pixels[i] = Color.rgb(red, green, blue);
+        }
+        bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmp;
+    }
+
+    static Bitmap changeContrast(Bitmap bmp, int percentage){
+        bmp = checkMutable(bmp);
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        int[] pixels = new int[width * height];
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+        for (int i = 0; i < pixels.length; i++) {
+            //newRed   = Truncate(factor * (Red(colour)   - 128) + 128);
+            //newGreen = Truncate(factor * (Green(colour) - 128) + 128);
+            //newBlue  = Truncate(factor * (Blue(colour)  - 128) + 128);
+            int o = pixels[i];
+            int blue = Color.blue(o) + percentage;
+            if(blue>255)
+                blue=255;
+            if(blue < 0)
+                blue = 0;
+
+            int red = Color.red(o) + percentage;
+            if(red>255)
+                red=255;
+            if(red < 0)
+                red = 0;
+
+            int green = Color.green(o) + percentage;
+            if(green>255)
+                green=255;
+            if(green < 0)
+                green = 0;
+
+            pixels[i] = Color.rgb(red, green, blue);
+        }
+        bmp.setPixels(pixels, 0, width, 0, 0, width, height);
         return bmp;
     }
 
@@ -117,7 +188,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap ColorFilter(Bitmap bmp, int option) {
+    static Bitmap colorFilter(Bitmap bmp, int option) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -139,36 +210,51 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap changeLuminosity(Bitmap bmp, int percentage){
-        bmp = checkMutable(bmp);
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        int[] pixels = new int[width * height];
-        float[] hsv = new float[3];
-        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        for (int i = 0; i < pixels.length; i++) {
-            int o = pixels[i];
-            int blue = Color.blue(o) + percentage * Color.blue(o);
-            if(blue>255)
-                blue=255;
-            if(blue < 0)
-                blue = 0;
+    static Bitmap egalizationHistogram(Bitmap bmp) {
+        int size = bmp.getWidth() * bmp.getHeight();
+        int pixelsColor[] = new int[size];
+        int pixelsColorRGB[][] = new int[size][3];
+        int pixelsColorNew[] = new int[size];
+        int pixelsShadesOfGrey[] = new int[size];
+        int histogramShadesOfGrey[] = new int[256];
+        int cumulateHistogramShadesOfGrey[] = new int[256];
+        int tempColor;
+        int red, green, blue;
 
-            int red = Color.red(o) + percentage * Color.red(o);
-            if(red>255)
-                red=255;
-            if(red < 0)
-                red = 0;
+        bmp.getPixels(pixelsColor, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
 
-            int green = Color.green(o) + percentage * Color.green(o);
-            if(green>255)
-                green=255;
-            if(green < 0)
-                green = 0;
-
-            pixels[i] = Color.rgb(red, green, blue);
+        for (int i = 0; i < size; i++) {
+            pixelsColorRGB[i][0] = Color.red(pixelsColor[i]);
+            pixelsColorRGB[i][1] = Color.green(pixelsColor[i]);
+            pixelsColorRGB[i][2] = Color.blue(pixelsColor[i]);
         }
-        bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+
+        Bitmap greyImage = toGray(bmp);
+        greyImage.getPixels(pixelsShadesOfGrey, 0, greyImage.getWidth(), 0, 0, greyImage.getWidth(), greyImage.getHeight());
+
+        for (int i = 0; i <= 255; i++) {
+            histogramShadesOfGrey[i] = 0;
+        }
+
+        for (int i = 0; i < size; i++) {
+            tempColor = Color.red(pixelsShadesOfGrey[i]);
+            histogramShadesOfGrey[tempColor]++;
+        }
+
+        cumulateHistogramShadesOfGrey[0] = histogramShadesOfGrey[0];
+
+        for (int i = 1; i <= 255; i++) {
+            cumulateHistogramShadesOfGrey[i] = cumulateHistogramShadesOfGrey[i - 1] + histogramShadesOfGrey[i];
+        }
+
+        for (int i = 0; i < size; i++) {
+            red = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][0]] * 255) / size;
+            green = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][1]] * 255) / size;
+            blue = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][2]] * 255) / size;
+            pixelsColorNew[i] = Color.rgb(red, green, blue);
+        }
+
+        bmp.setPixels(pixelsColorNew, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         return bmp;
     }
 
@@ -266,9 +352,7 @@ abstract class Filter{
         int[] pixels = new int[width * height];
         int[] laplacePixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int[] red= new int[3*3];
-        int[] blue= new int[3*3];
-        int[] green= new int[3*3];
+        int red = 0,blue = 0, green = 0;
         int x_pixelMatrix, y_pixelMatrix;
         for(int i = 0; i < laplacePixels.length; i++)
         {
@@ -277,19 +361,17 @@ abstract class Filter{
 
             if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2))
             {
-                red[0] = Color.red(pixels[i]);
-                green[0] = Color.green(pixels[i]);
-                blue[0] = Color.blue(pixels[i]);
+                red = Color.red(pixels[i]);
+                green = Color.green(pixels[i]);
+                blue = Color.blue(pixels[i]);
             }
             else {
-                int index = 0;
                 int laplaceX = 0, laplaceY = 0;
                 for (int x = x_pixelMatrix -(3 / 2); x <= x_pixelMatrix +(3 / 2); x++) {
                     for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
-                        red[index] = Color.red(pixels[x+y*width])*matrix[laplaceX][laplaceY];
-                        green[index] = Color.green(pixels[x+y*width])*matrix[laplaceX][laplaceY];
-                        blue[index] = Color.blue(pixels[x+y*width])*matrix[laplaceX][laplaceY];
-                        index++;
+                        red += Color.red(pixels[x+y*width])*matrix[laplaceX][laplaceY];
+                        green += Color.green(pixels[x+y*width])*matrix[laplaceX][laplaceY];
+                        blue += Color.blue(pixels[x+y*width])*matrix[laplaceX][laplaceY];
                         laplaceY++;
                         if(laplaceY == 3){
                             laplaceX++;
@@ -298,63 +380,60 @@ abstract class Filter{
                     }
                 }
             }
-            int finalRed = 0, finalGreen = 0, finalBlue = 0;
-            for (int color : red) finalRed += color;
-            for (int color : green) finalGreen += color;
-            for (int color : blue) finalBlue += color;
 
-            laplacePixels[i] = Color.rgb(finalRed,finalGreen,finalBlue);
+            laplacePixels[i] = Color.rgb(red,green,blue);
         }
 
         bmp.setPixels(laplacePixels, 0, width, 0, 0, width, height);
         return bmp;
     }
 
-    static Bitmap egalizationHistogram(Bitmap bmp) {
-        int size = bmp.getWidth() * bmp.getHeight();
-        int pixelsColor[] = new int[size];
-        int pixelsColorRGB[][] = new int[size][3];
-        int pixelsColorNew[] = new int[size];
-        int pixelsShadesOfGrey[] = new int[size];
-        int histogramShadesOfGrey[] = new int[256];
-        int cumulateHistogramShadesOfGrey[] = new int[256];
-        int tempColor;
-        int red, green, blue;
+    static Bitmap sobelConvolution(Bitmap bmp){
+        bmp = checkMutable(bmp);
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        int[] pixels = new int[width * height];
+        int[] laplacePixels = new int[width * height];
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+        int red = 0, blue = 0, green = 0;
+        int x_pixelMatrix, y_pixelMatrix;
+        for(int i = 0; i < laplacePixels.length; i++)
+        {
+            x_pixelMatrix=i%width;
+            y_pixelMatrix=i/width;
 
-        bmp.getPixels(pixelsColor, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2))
+            {
+                red = Color.red(pixels[i]);
+                green = Color.green(pixels[i]);
+                blue = Color.blue(pixels[i]);
+            }
+            else {
+                int sobelI = 0;
+                int sobelX = 0, sobelY = 0;
+                int[][] matrix = SOBEL_X_FILTER;
+                while (sobelI < 2) {
+                    for (int x = x_pixelMatrix - (3 / 2); x <= x_pixelMatrix + (3 / 2); x++) {
+                        for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
+                            red += Color.red(pixels[x + y * width]) * matrix[sobelX][sobelY];
+                            green += Color.green(pixels[x + y * width]) * matrix[sobelX][sobelY];
+                            blue += Color.blue(pixels[x + y * width]) * matrix[sobelX][sobelY];
+                            sobelY++;
+                            if (sobelY == 3) {
+                                sobelX++;
+                                sobelY = 0;
+                            }
+                        }
+                    }
+                    sobelI++;
+                    matrix = SOBEL_Y_FILTER;
+                }
+            }
 
-        for (int i = 0; i < size; i++) {
-            pixelsColorRGB[i][0] = Color.red(pixelsColor[i]);
-            pixelsColorRGB[i][1] = Color.green(pixelsColor[i]);
-            pixelsColorRGB[i][2] = Color.blue(pixelsColor[i]);
+            laplacePixels[i] = Color.rgb(red,green,blue);
         }
 
-        Bitmap greyImage = toGray(bmp);
-        greyImage.getPixels(pixelsShadesOfGrey, 0, greyImage.getWidth(), 0, 0, greyImage.getWidth(), greyImage.getHeight());
-
-        for (int i = 0; i <= 255; i++) {
-            histogramShadesOfGrey[i] = 0;
-        }
-
-        for (int i = 0; i < size; i++) {
-            tempColor = Color.red(pixelsShadesOfGrey[i]);
-            histogramShadesOfGrey[tempColor]++;
-        }
-
-        cumulateHistogramShadesOfGrey[0] = histogramShadesOfGrey[0];
-
-        for (int i = 1; i <= 255; i++) {
-            cumulateHistogramShadesOfGrey[i] = cumulateHistogramShadesOfGrey[i - 1] + histogramShadesOfGrey[i];
-        }
-
-        for (int i = 0; i < size; i++) {
-            red = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][0]] * 255) / size;
-            green = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][1]] * 255) / size;
-            blue = (cumulateHistogramShadesOfGrey[pixelsColorRGB[i][2]] * 255) / size;
-            pixelsColorNew[i] = Color.rgb(red, green, blue);
-        }
-
-        bmp.setPixels(pixelsColorNew, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+        bmp.setPixels(laplacePixels, 0, width, 0, 0, width, height);
         return bmp;
     }
 }

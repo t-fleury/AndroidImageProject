@@ -29,9 +29,6 @@ public class MatrixChoice_DialogFragment extends DialogFragment {
                             case 3 :
                                 //TODO Gaussian filter
                                 break;
-                            case 4 :
-                                //TODO Sobel filter
-                                break;
                         }
                     }
                 });

@@ -67,11 +67,10 @@ public class Filter_DialogFragment extends DialogFragment {
                                 break;
                             case 12:
                                 imageActivity.setConvolutionChoice(3);
-                                matrixChoise_dialogFragment.show(getFragmentManager(),"median");
+                                matrixChoise_dialogFragment.show(getFragmentManager(),"gaussian");
                                 break;
                             case 13:
-                                imageActivity.setConvolutionChoice(4);
-                                matrixChoise_dialogFragment.show(getFragmentManager(),"median");
+                                imageActivity.setPicture(Filter.sobelConvolution(imageActivity.getPicture()));
                                 break;
                         }
                     }

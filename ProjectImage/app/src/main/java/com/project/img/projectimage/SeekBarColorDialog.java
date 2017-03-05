@@ -29,7 +29,7 @@ public class SeekBarColorDialog extends DialogFragment {
                 if (imageActivity.isChoice()){
                     imageActivity.setPicture(Filter.toNotRandomColor(imageActivity.getPicture(), value.getProgress()));
                 }else{
-                    imageActivity.setPicture(Filter.ColorFilter(imageActivity.getPicture(), value.getProgress()));
+                    imageActivity.setPicture(Filter.colorFilter(imageActivity.getPicture(), value.getProgress()));
                 }
             }
         });

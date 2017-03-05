@@ -67,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Check permissions to get a picture or using the camera
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED) {
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
             } else {
                 ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 0);
             }
-        }
+        }*/
     }
 
     private void dispatchTakePictureIntent() {

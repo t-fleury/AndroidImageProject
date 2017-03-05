@@ -23,11 +23,12 @@ public class SeekBarDialog extends DialogFragment {
                 dialog.dismiss();
                 SeekBar value = (SeekBar) ((AlertDialog) dialog).findViewById(R.id.choix);
                 int percentage = value.getProgress();
-                Log.d("lum val", Integer.toString(percentage));
                 percentage -= 50;
                 ImageActivity imageActivity = (ImageActivity) getActivity();
                 if (imageActivity.isChoice()){
                     imageActivity.setPicture(Filter.changeLuminosity(imageActivity.getPicture(), percentage));
+                }else{
+                    imageActivity.setPicture(Filter.changeContrast(imageActivity.getPicture(), percentage));
                 }
             }
         });
