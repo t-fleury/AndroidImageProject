@@ -21,20 +21,20 @@ public class SeekBarColorDialog extends DialogFragment {
         builder.setTitle(R.string.color);
         builder.setView(layout.inflate(R.layout.seekbar_spectrum_dialog,null));
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
                 SeekBar value = (SeekBar) ((AlertDialog) dialog).findViewById(R.id.choix);
                 ImageActivity imageActivity = (ImageActivity) getActivity();
                 if (imageActivity.isChoice()){
-                    imageActivity.setPicture(Filter.toNotRandomColor(imageActivity.getPicture(), value.getProgress()));
+                    imageActivity.setPicture(Filter.toColor(imageActivity.getPicture(), value.getProgress()));
                 }else{
                     imageActivity.setPicture(Filter.colorFilter(imageActivity.getPicture(), value.getProgress()));
                 }
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

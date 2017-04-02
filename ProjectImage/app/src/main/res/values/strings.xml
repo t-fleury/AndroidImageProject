@@ -7,11 +7,13 @@
     <string name="filter">Filters</string>
     <string name="matrix">Matrix size ?</string>
     <string name="color">Which color ?</string>
-    <string name="degree">Which degree?</string>
+    <string name="value">Which value?</string>
     <string name="display_full_size">Display full size</string>
     <string name="display_scaled">Display scaled size</string>
     <string name="reset_picture">Reset picture</string>
     <string name="save_option">Save picture</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="filter_name">
         <item>Set luminosity</item>

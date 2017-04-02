@@ -10,26 +10,40 @@ import static android.graphics.Color.RGBToHSV;
 
 abstract class Filter{
 
-    final static private int[][] LAPLACE_FILTER1 = {{0, 1, 0},
-                                                    {1,-4, 1},
-                                                    {0, 1, 0}};
-    final static private int[][] LAPLACE_FILTER2 = {{1, 1, 1},
-                                                    {1,-8, 1},
-                                                    {1, 1, 1}};
+    final static private double[][] LAPLACE_FILTER1 = {{0, 1, 0},
+                                                       {1,-4, 1},
+                                                       {0, 1, 0}};
+    final static private double[][] LAPLACE_FILTER2 = {{1, 1, 1},
+                                                       {1,-8, 1},
+                                                       {1, 1, 1}};
 
-    final static private int[][] SOBEL_X_FILTER = {{-1,0,1},
-                                                   {-2,0,2},
-                                                   {-1,0,1}};
+    final static private double[][] SOBEL_X_FILTER = {{-1,0,1},
+                                                      {-2,0,2},
+                                                      {-1,0,1}};
 
-    final static private int[][] SOBEL_Y_FILTER = {{-1,-2,-1},
-                                                   { 0, 0, 0},
-                                                   {-1,-2,-1}};
+    final static private double[][] SOBEL_Y_FILTER = {{-1,-2,-1},
+                                                      { 0, 0, 0},
+                                                      {-1,-2,-1}};
 
     private static Bitmap checkMutable(Bitmap bmp){
         if(!bmp.isMutable()){
             bmp = bmp.copy(bmp.getConfig(),true);
         }
         return bmp;
+    }
+
+     private static double standardization(double val, double coeffMin, double coeffMax){
+        return (val - 255*coeffMin) / (coeffMax - coeffMin);
+    }
+
+    private static double inColor(double value){
+        if (value > 255){
+            return 255;
+        }else if(value < 0){
+            return 0;
+        }else{
+            return value;
+        }
     }
 
     static Bitmap changeLuminosity(Bitmap bmp, int percentage){
@@ -40,23 +54,9 @@ abstract class Filter{
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         for (int i = 0; i < pixels.length; i++) {
             int o = pixels[i];
-            int blue = Color.blue(o) + percentage;
-            if(blue>255)
-                blue=255;
-            if(blue < 0)
-                blue = 0;
-
-            int red = Color.red(o) + percentage;
-            if(red>255)
-                red=255;
-            if(red < 0)
-                red = 0;
-
-            int green = Color.green(o) + percentage;
-            if(green>255)
-                green=255;
-            if(green < 0)
-                green = 0;
+            int blue = (int)inColor(Color.blue(o) + percentage);
+            int red = (int)inColor(Color.red(o) + percentage);
+            int green = (int)inColor(Color.green(o) + percentage);
 
             pixels[i] = Color.rgb(red, green, blue);
         }
@@ -65,37 +65,6 @@ abstract class Filter{
     }
 
     static Bitmap changeContrast(Bitmap bmp, int percentage){
-        bmp = checkMutable(bmp);
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        int[] pixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        for (int i = 0; i < pixels.length; i++) {
-            //newRed   = Truncate(factor * (Red(colour)   - 128) + 128);
-            //newGreen = Truncate(factor * (Green(colour) - 128) + 128);
-            //newBlue  = Truncate(factor * (Blue(colour)  - 128) + 128);
-            int o = pixels[i];
-            int blue = Color.blue(o) + percentage;
-            if(blue>255)
-                blue=255;
-            if(blue < 0)
-                blue = 0;
-
-            int red = Color.red(o) + percentage;
-            if(red>255)
-                red=255;
-            if(red < 0)
-                red = 0;
-
-            int green = Color.green(o) + percentage;
-            if(green>255)
-                green=255;
-            if(green < 0)
-                green = 0;
-
-            pixels[i] = Color.rgb(red, green, blue);
-        }
-        bmp.setPixels(pixels, 0, width, 0, 0, width, height);
         return bmp;
     }
 
@@ -130,15 +99,9 @@ abstract class Filter{
             int red = Color.red(pixels[i]);
             int green = Color.green(pixels[i]);
 
-            int finalRed=(red*393/1000)+(green*769/1000)+(blue*189/1000);
-            int finalGreen=(red*349/1000)+(green*686/1000)+(blue*168/1000);
-            int finalBlue=(red*272/1000)+(green*534/1000)+(blue*131/1000);
-            if(finalRed>255)
-                finalRed=255;
-            if(finalGreen>255)
-                finalGreen=255;
-            if(finalBlue>255)
-                finalBlue=255;
+            int finalRed = (int)inColor((red*393/1000)+(green*769/1000)+(blue*189/1000));
+            int finalGreen = (int)inColor((red*349/1000)+(green*686/1000)+(blue*168/1000));
+            int finalBlue = (int)inColor((red*272/1000)+(green*534/1000)+(blue*131/1000));
 
             pixels[i] = Color.rgb(finalRed, finalGreen, finalBlue);
         }
@@ -146,30 +109,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap toRandomColor(Bitmap bmp) {
-        bmp = checkMutable(bmp);
-        double rm=(Math.random())*360;
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        int[] pixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        float [] hsv=new float[3];
-        for (int i = 0; i < pixels.length; i++) {
-            int o = pixels[i];
-            int blue = Color.blue(o);
-            int red = Color.red(o);
-            int green = Color.green(o);
-
-            RGBToHSV(red,green,(blue),hsv);
-            hsv[0]=(float)rm;
-
-            pixels[i] = HSVToColor(hsv);
-        }
-        bmp.setPixels(pixels, 0, width, 0, 0, width, height);
-        return bmp;
-    }
-
-    static Bitmap toNotRandomColor(Bitmap bmp, int color) {
+    static Bitmap toColor(Bitmap bmp, int color) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -259,41 +199,102 @@ abstract class Filter{
     }
 
     static Bitmap meanConvolution(int sizeMatrix, Bitmap bmp){
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        double[][] meanMatrix = new double[width][height];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                meanMatrix[i][j] = 1/(Math.pow(sizeMatrix,2));
+            }
+        }
+        double[] finalMean = convolution(meanMatrix,sizeMatrix,bmp);
+        bmp.setPixels(doubleIntoInt(finalMean), 0, width, 0, 0, width, height);
+        return bmp;
+    }
+
+    static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp){
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        double[] finalLaplacian;
+        if(choiceMatrix == 1){
+            finalLaplacian = convolution(LAPLACE_FILTER1,3,bmp);
+        }else{
+            finalLaplacian = convolution(LAPLACE_FILTER2,3,bmp);
+        }
+        bmp.setPixels(doubleIntoInt(finalLaplacian), 0, width, 0, 0, width, height);
+        return bmp;
+    }
+
+    private static double[][] generateGaussianMatrix(int matrixSize, double sigma){
+        double[][] gaussianMatrix = new double[matrixSize][matrixSize];
+
+        double sum = 0.0;
+        int shift = matrixSize / 2;
+        for (int x = -shift; x <= shift; x++) {
+            for (int y = -shift; y <= shift; y++) {
+                gaussianMatrix[x + shift][y + shift] = (Math.exp((-(Math.pow(x, 2) + Math.pow(y, 2))) / (2 * Math.pow(sigma,2)))) / (2*Math.PI*Math.pow(sigma,2));
+                sum += gaussianMatrix[x + shift][y + shift];
+            }
+        }
+        for (int i = 0; i < matrixSize; ++i) {
+            for (int j = 0; j < matrixSize; ++j) {
+                gaussianMatrix[i][j] /= sum;
+                System.out.println(gaussianMatrix[i][j]);
+            }
+        }
+        return gaussianMatrix;
+    }
+
+    static Bitmap sobelConvolution(Bitmap bmp){
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        double[] sobelX = convolution(SOBEL_X_FILTER,3,bmp);
+        double[] sobelY = convolution(SOBEL_Y_FILTER,3,bmp);
+        int[] finalSobel = new int[width*height];
+        for (int i = 0; i < width * height; i++) {
+            finalSobel[i] = (int)Math.sqrt(Math.pow(sobelX[i],2) + Math.pow(sobelY[i],2));
+        }
+        bmp.setPixels(finalSobel, 0, width, 0, 0, width, height);
+        return bmp;
+    }
+
+    private static double[] convolution(double[][] matrix, int length, Bitmap bmp){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
-        int[] pixelMoyenneur = new int[width * height];
-        int red=0, blue=0, green=0, x_pixelMatrix, y_pixelMatrix;
-
+        double[] newPixels = new double[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+        int red = 0, blue = 0, green = 0;
+        int x_pixelMatrix, y_pixelMatrix;
 
-        for(int i = 0; i < pixelMoyenneur.length; i++)
-        {
+        for(int i = 0; i < newPixels.length; i++) {
             x_pixelMatrix=i%width;
             y_pixelMatrix=i/width;
-            if(i <= width*(sizeMatrix/2) || i >= width * (height-(sizeMatrix/2)) || i % width < sizeMatrix/2  || i % width >= width-(sizeMatrix/2)) {
+
+            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2)) {
                 red = Color.red(pixels[i]);
                 green = Color.green(pixels[i]);
                 blue = Color.blue(pixels[i]);
-            }else {
-                for (int x = x_pixelMatrix -(sizeMatrix / 2); x <= x_pixelMatrix +(sizeMatrix / 2); x++) {
-                    for (int y = y_pixelMatrix - (sizeMatrix / 2); y <= y_pixelMatrix + (sizeMatrix / 2); y++) {
-                        red+=Color.red(pixels[x+y*width]);
-                        green+=Color.green(pixels[x+y*width]);
-                        blue+=Color.blue(pixels[x+y*width]);
+            }
+            else {
+                int indexX = 0, indexY = 0;
+                for (int x = x_pixelMatrix - (3 / 2); x <= x_pixelMatrix + (3 / 2); x++) {
+                    for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
+                        red += Color.red(pixels[x + y * width]) * matrix[indexX][indexY];
+                        green += Color.green(pixels[x + y * width]) * matrix[indexX][indexY];
+                        blue += Color.blue(pixels[x + y * width]) * matrix[indexX][indexY];
+                        indexY++;
+                        if (indexY == length) {
+                            indexX++;
+                            indexY = 0;
+                        }
                     }
                 }
             }
-
-            red/=(sizeMatrix*sizeMatrix);
-            green/=(sizeMatrix*sizeMatrix);
-            blue/=(sizeMatrix*sizeMatrix);
-            pixelMoyenneur[i] = Color.rgb(red, green, blue);
+            newPixels[i] = Color.rgb(red,green,blue);
         }
-
-        bmp.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
-        return bmp;
+        return newPixels;
     }
 
     static Bitmap medianConvolution(int sizeMatrix, Bitmap bmp){
@@ -339,160 +340,26 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp){
-        bmp = checkMutable(bmp);
-        int[][] matrix;
-        if(choiceMatrix == 1){
-            matrix = LAPLACE_FILTER1;
-        }else{
-            matrix = LAPLACE_FILTER2;
+    private static Bitmap inverseColor(Bitmap bmp){
+        int[] pixels = new int[bmp.getWidth() * bmp.getHeight()];
+        bmp.getPixels(pixels, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+        for (int i = 0; i < pixels.length; i++) {
+            int o = pixels[i];
+            int blue = (int)inColor(254 - Color.blue(o));
+            int red = (int)inColor(254 - Color.red(o));
+            int green = (int)inColor(254 - Color.green(o));
+
+            pixels[i] = Color.rgb(red, green, blue);
         }
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        int[] pixels = new int[width * height];
-        int[] laplacePixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int red = 0,blue = 0, green = 0;
-        int x_pixelMatrix, y_pixelMatrix;
-        for(int i = 0; i < laplacePixels.length; i++)
-        {
-            x_pixelMatrix=i%width;
-            y_pixelMatrix=i/width;
-
-            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2))
-            {
-                red = Color.red(pixels[i]);
-                green = Color.green(pixels[i]);
-                blue = Color.blue(pixels[i]);
-            }
-            else {
-                int laplaceX = 0, laplaceY = 0;
-                for (int x = x_pixelMatrix -(3 / 2); x <= x_pixelMatrix +(3 / 2); x++) {
-                    for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
-                        red += Color.red(pixels[x+y*width])*matrix[laplaceX][laplaceY];
-                        green += Color.green(pixels[x+y*width])*matrix[laplaceX][laplaceY];
-                        blue += Color.blue(pixels[x+y*width])*matrix[laplaceX][laplaceY];
-                        laplaceY++;
-                        if(laplaceY == 3){
-                            laplaceX++;
-                            laplaceY = 0;
-                        }
-                    }
-                }
-            }
-
-            laplacePixels[i] = Color.rgb(red,green,blue);
-        }
-
-        bmp.setPixels(laplacePixels, 0, width, 0, 0, width, height);
+        bmp.setPixels(pixels, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         return bmp;
     }
 
-    private static double[][] generateGaussianMatrix(int matrixSize, double sigma){
-        double[][] gaussianMatrix = new double[matrixSize][matrixSize];
-
-        double sum = 0.0;
-        int shift = matrixSize / 2;
-        for (int x = -shift; x <= shift; x++) {
-            for (int y = -shift; y <= shift; y++) {
-                gaussianMatrix[x + shift][y + shift] = (Math.exp((-(Math.pow(x, 2) + Math.pow(y, 2))) / (2 * Math.pow(sigma,2)))) / (2*Math.PI*Math.pow(sigma,2));
-                sum += gaussianMatrix[x + shift][y + shift];
-            }
+    private static int[] doubleIntoInt(double[] tab){
+        int[] newTab = new int[tab.length];
+        for (int i = 0; i < tab.length; i++) {
+            newTab[i] = (int)tab[i];
         }
-        for (int i = 0; i < matrixSize; ++i) {
-            for (int j = 0; j < matrixSize; ++j) {
-                gaussianMatrix[i][j] /= sum;
-                System.out.println(gaussianMatrix[i][j]);
-            }
-        }
-        return gaussianMatrix;
-    }
-
-    static Bitmap gaussianConvolution(int sizeMatrix, Bitmap bmp){
-        bmp = checkMutable(bmp);
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        double[][] matrix = generateGaussianMatrix(sizeMatrix, 1.0);
-        int[] pixels = new int[width * height];
-        int[] gaussianPixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int red = 0, blue = 0, green = 0;
-        int x_pixelMatrix, y_pixelMatrix;
-        for(int i = 0; i < gaussianPixels.length; i++) {
-            x_pixelMatrix=i%width;
-            y_pixelMatrix=i/width;
-
-            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2)) {
-                red = Color.red(pixels[i]);
-                green = Color.green(pixels[i]);
-                blue = Color.blue(pixels[i]);
-            }
-            else {
-                int gaussianX = 0, gaussianY = 0;
-                for (int x = x_pixelMatrix - (3 / 2); x <= x_pixelMatrix + (3 / 2); x++) {
-                    for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
-                        red += Color.red(pixels[x + y * width]) * matrix[gaussianX][gaussianY];
-                        green += Color.green(pixels[x + y * width]) * matrix[gaussianX][gaussianY];
-                        blue += Color.blue(pixels[x + y * width]) * matrix[gaussianX][gaussianY];
-                        gaussianY++;
-                        if (gaussianY == 3) {
-                            gaussianX++;
-                            gaussianY = 0;
-                        }
-                    }
-                }
-            }
-
-            gaussianPixels[i] = Color.rgb(red,green,blue);
-        }
-
-        bmp.setPixels(gaussianPixels, 0, width, 0, 0, width, height);
-        return bmp;
-    }
-
-    static Bitmap sobelConvolution(Bitmap bmp){
-        bmp = checkMutable(bmp);
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        int[] pixels = new int[width * height];
-        int[] sobelPixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int red = 0, blue = 0, green = 0;
-        int x_pixelMatrix, y_pixelMatrix;
-        for(int i = 0; i < sobelPixels.length; i++) {
-            x_pixelMatrix=i%width;
-            y_pixelMatrix=i/width;
-
-            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2)) {
-                red = Color.red(pixels[i]);
-                green = Color.green(pixels[i]);
-                blue = Color.blue(pixels[i]);
-            }
-            else {
-                int sobelI = 0;
-                int[][] matrix = SOBEL_X_FILTER;
-                while (sobelI < 2) {
-                    int sobelX = 0, sobelY = 0;
-                    for (int x = x_pixelMatrix - (3 / 2); x <= x_pixelMatrix + (3 / 2); x++) {
-                        for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
-                            red += Color.red(pixels[x + y * width]) * matrix[sobelX][sobelY];
-                            green += Color.green(pixels[x + y * width]) * matrix[sobelX][sobelY];
-                            blue += Color.blue(pixels[x + y * width]) * matrix[sobelX][sobelY];
-                            sobelY++;
-                            if (sobelY == 3) {
-                                sobelX++;
-                                sobelY = 0;
-                            }
-                        }
-                    }
-                    sobelI++;
-                    matrix = SOBEL_Y_FILTER;
-                }
-            }
-            sobelPixels[i] = Color.rgb(red,green,blue);
-        }
-
-        bmp.setPixels(sobelPixels, 0, width, 0, 0, width, height);
-        return bmp;
+        return newTab;
     }
 }

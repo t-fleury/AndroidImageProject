@@ -45,7 +45,8 @@ public class Filter_DialogFragment extends DialogFragment {
                                 seekBarColorDialog.show(getFragmentManager(), "notRandom");
                                 break;
                             case 6 :
-                                imageActivity.setPicture(Filter.toRandomColor(imageActivity.getPicture()));
+                                double rm = (Math.random())*360;
+                                imageActivity.setPicture(Filter.toColor(imageActivity.getPicture(), (int)rm));
                                 break;
                             case 7 :
                                 imageActivity.setChoice(false);
