@@ -1,13 +1,16 @@
-package com.project.img.projectimage;
+package com.project.img.projectimage.Dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.SeekBar;
+
+import com.project.img.projectimage.Filter.*;
+import com.project.img.projectimage.IHM.ImageActivity;
+import com.project.img.projectimage.R;
 
 public class SeekBarDialog extends DialogFragment {
 

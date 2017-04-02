@@ -1,12 +1,15 @@
-package com.project.img.projectimage;
+package com.project.img.projectimage.Dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+
+import com.project.img.projectimage.Filter.*;
+import com.project.img.projectimage.IHM.ImageActivity;
+import com.project.img.projectimage.R;
 
 public class Filter_DialogFragment extends DialogFragment {
 
@@ -35,7 +38,7 @@ public class Filter_DialogFragment extends DialogFragment {
                                 imageActivity.setPicture(Filter.egalizationHistogram(imageActivity.getPicture()));
                                 break;
                             case 3 :
-                                imageActivity.setPicture(Filter.toGray(imageActivity.getPicture()));
+                                imageActivity.setPicture(Filter.toShadeofGray(imageActivity.getPicture()));
                                 break;
                             case 4 :
                                 imageActivity.setPicture(Filter.toSepia(imageActivity.getPicture()));

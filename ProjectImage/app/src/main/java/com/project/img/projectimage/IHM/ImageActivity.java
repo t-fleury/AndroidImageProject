@@ -1,7 +1,6 @@
-package com.project.img.projectimage;
+package com.project.img.projectimage.IHM;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.project.img.projectimage.Dialog.Filter_DialogFragment;
+import com.project.img.projectimage.R;
 
 import java.util.Vector;
 

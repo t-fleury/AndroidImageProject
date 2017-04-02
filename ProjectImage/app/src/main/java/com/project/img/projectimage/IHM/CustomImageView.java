@@ -1,4 +1,4 @@
-package com.project.img.projectimage;
+package com.project.img.projectimage.IHM;
 
 import android.content.Context;
 import android.graphics.Bitmap;

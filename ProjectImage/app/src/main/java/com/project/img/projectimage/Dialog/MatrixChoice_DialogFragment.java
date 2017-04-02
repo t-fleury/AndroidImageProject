@@ -1,4 +1,4 @@
-package com.project.img.projectimage;
+package com.project.img.projectimage.Dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,6 +6,10 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+
+import com.project.img.projectimage.Filter.*;
+import com.project.img.projectimage.IHM.ImageActivity;
+import com.project.img.projectimage.R;
 
 
 public class MatrixChoice_DialogFragment extends DialogFragment {
@@ -27,7 +31,8 @@ public class MatrixChoice_DialogFragment extends DialogFragment {
                                 imageActivity.setPicture(Filter.medianConvolution((2*(which+1)+1), imageActivity.getPicture()));
                                 break;
                             case 3 :
-                                imageActivity.setPicture(Filter.gaussianConvolution((2*(which+1)+1), imageActivity.getPicture()));
+                                //TODO Gaussien
+                                //imageActivity.setPicture(Filter.gaussianConvolution((2*(which+1)+1), 1,imageActivity.getPicture()));
                                 break;
                         }
                     }

@@ -1,14 +1,12 @@
-package com.project.img.projectimage;
+package com.project.img.projectimage.Filter;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 
 import java.util.Arrays;
 import static android.graphics.Color.HSVToColor;
-import static android.graphics.Color.RGBToHSV;
 
-abstract class Filter{
+public abstract class Filter{
 
     final static private double[][] LAPLACE_FILTER1 = {{0, 1, 0},
                                                        {1,-4, 1},
@@ -32,7 +30,7 @@ abstract class Filter{
         return bmp;
     }
 
-     private static double standardization(double val, double coeffMin, double coeffMax){
+    private static double standardization(double val, double coeffMin, double coeffMax){
         return (val - 255*coeffMin) / (coeffMax - coeffMin);
     }
 
@@ -46,7 +44,7 @@ abstract class Filter{
         }
     }
 
-    static Bitmap changeLuminosity(Bitmap bmp, int percentage){
+    public static Bitmap changeLuminosity(Bitmap bmp, int percentage){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -64,11 +62,11 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap changeContrast(Bitmap bmp, int percentage){
+    public static Bitmap changeContrast(Bitmap bmp, int percentage){
         return bmp;
     }
 
-    static Bitmap toGray(Bitmap bmp) {
+    public static Bitmap toShadeofGray(Bitmap bmp) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -87,7 +85,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap toSepia(Bitmap bmp) {
+    public static Bitmap toSepia(Bitmap bmp) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -109,7 +107,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap toColor(Bitmap bmp, int color) {
+    public static Bitmap toColor(Bitmap bmp, int color) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -128,7 +126,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap colorFilter(Bitmap bmp, int option) {
+    public static Bitmap colorFilter(Bitmap bmp, int option) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -150,7 +148,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap egalizationHistogram(Bitmap bmp) {
+    public static Bitmap egalizationHistogram(Bitmap bmp) {
         int size = bmp.getWidth() * bmp.getHeight();
         int pixelsColor[] = new int[size];
         int pixelsColorRGB[][] = new int[size][3];
@@ -169,7 +167,7 @@ abstract class Filter{
             pixelsColorRGB[i][2] = Color.blue(pixelsColor[i]);
         }
 
-        Bitmap greyImage = toGray(bmp);
+        Bitmap greyImage = toShadeofGray(bmp);
         greyImage.getPixels(pixelsShadesOfGrey, 0, greyImage.getWidth(), 0, 0, greyImage.getWidth(), greyImage.getHeight());
 
         for (int i = 0; i <= 255; i++) {
@@ -198,7 +196,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap meanConvolution(int sizeMatrix, Bitmap bmp){
+    public static Bitmap meanConvolution(int sizeMatrix, Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         double[][] meanMatrix = new double[width][height];
@@ -212,7 +210,7 @@ abstract class Filter{
         return bmp;
     }
 
-    static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp){
+    public static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         double[] finalLaplacian;
@@ -225,8 +223,8 @@ abstract class Filter{
         return bmp;
     }
 
-    private static double[][] generateGaussianMatrix(int matrixSize, double sigma){
-        double[][] gaussianMatrix = new double[matrixSize][matrixSize];
+    public static double[][] gaussianConvolution(int matrixSize, double sigma, Bitmap bmp){
+        /*double[][] gaussianMatrix = new double[matrixSize][matrixSize];
 
         double sum = 0.0;
         int shift = matrixSize / 2;
@@ -242,10 +240,12 @@ abstract class Filter{
                 System.out.println(gaussianMatrix[i][j]);
             }
         }
-        return gaussianMatrix;
+        return gaussianMatrix;*/
+        //TODO Gaussien
+        return null;
     }
 
-    static Bitmap sobelConvolution(Bitmap bmp){
+    public static Bitmap sobelConvolution(Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         double[] sobelX = convolution(SOBEL_X_FILTER,3,bmp);
@@ -297,7 +297,7 @@ abstract class Filter{
         return newPixels;
     }
 
-    static Bitmap medianConvolution(int sizeMatrix, Bitmap bmp){
+    public static Bitmap medianConvolution(int sizeMatrix, Bitmap bmp){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
