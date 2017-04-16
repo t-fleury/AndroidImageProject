@@ -30,6 +30,7 @@
         <item>Filtre médian</item>
         <item>Filtre gaussien</item>
         <item>Filtre sobel</item>
+        <item>Effet crayon</item>
     </string-array>
 
     <string-array name="matrix_size">

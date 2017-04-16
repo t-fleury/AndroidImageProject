@@ -2,11 +2,7 @@ package com.project.img.projectimage.Filter;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
-
 import java.util.Arrays;
-
-import static java.lang.String.valueOf;
 
 public abstract class Filter{
 
@@ -224,9 +220,8 @@ public abstract class Filter{
         return bmp;
     }
 
-    public static double[][] gaussianConvolution(int matrixSize, double sigma, Bitmap bmp){
-        /*double[][] gaussianMatrix = new double[matrixSize][matrixSize];
-
+    public static Bitmap gaussianConvolution(int matrixSize, double sigma, Bitmap bmp){
+        double[][] gaussianMatrix = new double[matrixSize][matrixSize];
         double sum = 0.0;
         int shift = matrixSize / 2;
         for (int x = -shift; x <= shift; x++) {
@@ -238,12 +233,12 @@ public abstract class Filter{
         for (int i = 0; i < matrixSize; ++i) {
             for (int j = 0; j < matrixSize; ++j) {
                 gaussianMatrix[i][j] /= sum;
-                System.out.println(gaussianMatrix[i][j]);
             }
         }
-        return gaussianMatrix;*/
-        //TODO Gaussien
-        return null;
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        bmp.setPixels(convolution(gaussianMatrix,matrixSize,bmp), 0, width, 0, 0, width, height);
+        return bmp;
     }
 
     public static Bitmap sobelConvolution(Bitmap bmp){
@@ -350,5 +345,10 @@ public abstract class Filter{
         return bmp;
     }
 
-    //TODO Pencil
+    public static Bitmap pencilEffect(Bitmap bmp){
+        bmp = sobelConvolution(bmp);
+        bmp = inverseColor(bmp);
+        bmp = gaussianConvolution(3,1,bmp);
+        return bmp;
+    }
 }

@@ -30,6 +30,7 @@
         <item>Median filter</item>
         <item>Gaussian filter</item>
         <item>Sobel filter</item>
+        <item>Pencil effect</item>
     </string-array>
 
     <string-array name="matrix_size">

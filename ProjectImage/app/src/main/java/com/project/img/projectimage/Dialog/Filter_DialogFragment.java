@@ -76,6 +76,9 @@ public class Filter_DialogFragment extends DialogFragment {
                             case 13:
                                 imageActivity.setPicture(Filter.sobelConvolution(imageActivity.getPicture()));
                                 break;
+                            case 14 :
+                                imageActivity.setPicture(Filter.pencilEffect(imageActivity.getPicture()));
+                                break;
                         }
                     }
                 });
