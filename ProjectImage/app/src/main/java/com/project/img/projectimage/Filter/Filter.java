@@ -2,9 +2,11 @@ package com.project.img.projectimage.Filter;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.Arrays;
-import static android.graphics.Color.HSVToColor;
+
+import static java.lang.String.valueOf;
 
 public abstract class Filter{
 
@@ -199,27 +201,26 @@ public abstract class Filter{
     public static Bitmap meanConvolution(int sizeMatrix, Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        double[][] meanMatrix = new double[width][height];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        double[][] meanMatrix = new double[sizeMatrix][sizeMatrix];
+        for (int i = 0; i < sizeMatrix; i++) {
+            for (int j = 0; j < sizeMatrix; j++) {
                 meanMatrix[i][j] = 1/(Math.pow(sizeMatrix,2));
             }
         }
-        double[] finalMean = convolution(meanMatrix,sizeMatrix,bmp);
-        bmp.setPixels(doubleIntoInt(finalMean), 0, width, 0, 0, width, height);
+        bmp.setPixels(convolution(meanMatrix,sizeMatrix,bmp), 0, width, 0, 0, width, height);
         return bmp;
     }
 
     public static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        double[] finalLaplacian;
+        int[] finalLaplacian;
         if(choiceMatrix == 1){
             finalLaplacian = convolution(LAPLACE_FILTER1,3,bmp);
         }else{
             finalLaplacian = convolution(LAPLACE_FILTER2,3,bmp);
         }
-        bmp.setPixels(doubleIntoInt(finalLaplacian), 0, width, 0, 0, width, height);
+        bmp.setPixels(finalLaplacian, 0, width, 0, 0, width, height);
         return bmp;
     }
 
@@ -248,8 +249,8 @@ public abstract class Filter{
     public static Bitmap sobelConvolution(Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        double[] sobelX = convolution(SOBEL_X_FILTER,3,bmp);
-        double[] sobelY = convolution(SOBEL_Y_FILTER,3,bmp);
+        int[] sobelX = convolution(SOBEL_X_FILTER,3,bmp);
+        int[] sobelY = convolution(SOBEL_Y_FILTER,3,bmp);
         int[] finalSobel = new int[width*height];
         for (int i = 0; i < width * height; i++) {
             finalSobel[i] = (int)Math.sqrt(Math.pow(sobelX[i],2) + Math.pow(sobelY[i],2));
@@ -258,41 +259,35 @@ public abstract class Filter{
         return bmp;
     }
 
-    private static double[] convolution(double[][] matrix, int length, Bitmap bmp){
+    private static int[] convolution(double[][] matrix, int length, Bitmap bmp){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
-        double[] newPixels = new double[width * height];
+        int[] newPixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int red = 0, blue = 0, green = 0;
-        int x_pixelMatrix, y_pixelMatrix;
 
         for(int i = 0; i < newPixels.length; i++) {
-            x_pixelMatrix=i%width;
-            y_pixelMatrix=i/width;
-
-            if(i <= width || i >= width * (height-(3/2)) || i % width < 3/2  || i % width >= width-(3/2)) {
+            double red = 0, blue = 0, green = 0;
+            if(i <= width * (length / 2) || i >= width * (height - (length / 2)) || i % width < length / 2 || i % width >= width - (length / 2)){
                 red = Color.red(pixels[i]);
                 green = Color.green(pixels[i]);
                 blue = Color.blue(pixels[i]);
-            }
-            else {
+            }else{
                 int indexX = 0, indexY = 0;
-                for (int x = x_pixelMatrix - (3 / 2); x <= x_pixelMatrix + (3 / 2); x++) {
-                    for (int y = y_pixelMatrix - (3 / 2); y <= y_pixelMatrix + (3 / 2); y++) {
-                        red += Color.red(pixels[x + y * width]) * matrix[indexX][indexY];
-                        green += Color.green(pixels[x + y * width]) * matrix[indexX][indexY];
-                        blue += Color.blue(pixels[x + y * width]) * matrix[indexX][indexY];
+                for (int x = i - length/2; x < i - length/2; x++) {
+                    for (int y = i-(width*length/2); y < i+(width*length/2); y++) {
+                        int index = x+y*width;
+                        red += Color.red(pixels[index]) + matrix[indexX][indexY];
+                        green += Color.green(pixels[index]) + matrix[indexX][indexY];
+                        blue += Color.blue(pixels[index]) + matrix[indexX][indexY];
                         indexY++;
-                        if (indexY == length) {
-                            indexX++;
-                            indexY = 0;
-                        }
                     }
+                    indexX++;
+                    indexY = 0;
                 }
             }
-            newPixels[i] = Color.rgb(red,green,blue);
+            newPixels[i] = Color.rgb((int)red,(int)green,(int)blue);
         }
         return newPixels;
     }
@@ -355,11 +350,5 @@ public abstract class Filter{
         return bmp;
     }
 
-    private static int[] doubleIntoInt(double[] tab){
-        int[] newTab = new int[tab.length];
-        for (int i = 0; i < tab.length; i++) {
-            newTab[i] = (int)tab[i];
-        }
-        return newTab;
-    }
+    //TODO Pencil
 }
