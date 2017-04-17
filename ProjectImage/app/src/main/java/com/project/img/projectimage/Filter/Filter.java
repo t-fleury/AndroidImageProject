@@ -203,7 +203,7 @@ public abstract class Filter{
                 meanMatrix[i][j] = 1/(Math.pow(sizeMatrix,2));
             }
         }
-        bmp.setPixels(convolution(meanMatrix,sizeMatrix,bmp), 0, width, 0, 0, width, height);
+        bmp.setPixels(convolution(meanMatrix,sizeMatrix,bmp,0,255), 0, width, 0, 0, width, height);
         return bmp;
     }
 
@@ -212,9 +212,9 @@ public abstract class Filter{
         int height = bmp.getHeight();
         int[] finalLaplacian;
         if(choiceMatrix == 1){
-            finalLaplacian = convolution(LAPLACE_FILTER1,3,bmp);
+            finalLaplacian = convolution(LAPLACE_FILTER1,3,bmp, -255*4, 255*4);
         }else{
-            finalLaplacian = convolution(LAPLACE_FILTER2,3,bmp);
+            finalLaplacian = convolution(LAPLACE_FILTER2,3,bmp, -255*8,255*8);
         }
         bmp.setPixels(finalLaplacian, 0, width, 0, 0, width, height);
         return bmp;
@@ -237,15 +237,15 @@ public abstract class Filter{
         }
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        bmp.setPixels(convolution(gaussianMatrix,matrixSize,bmp), 0, width, 0, 0, width, height);
+        bmp.setPixels(convolution(gaussianMatrix,matrixSize,bmp,0,255), 0, width, 0, 0, width, height);
         return bmp;
     }
 
     public static Bitmap sobelConvolution(Bitmap bmp){
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        int[] sobelX = convolution(SOBEL_X_FILTER,3,bmp);
-        int[] sobelY = convolution(SOBEL_Y_FILTER,3,bmp);
+        int[] sobelX = convolution(SOBEL_X_FILTER,3,bmp, -4*255,4*255);
+        int[] sobelY = convolution(SOBEL_Y_FILTER,3,bmp,-4*255,4*255);
         int[] finalSobel = new int[width*height];
         for (int i = 0; i < width * height; i++) {
             finalSobel[i] = (int)Math.sqrt(Math.pow(sobelX[i],2) + Math.pow(sobelY[i],2));
@@ -254,35 +254,44 @@ public abstract class Filter{
         return bmp;
     }
 
-    private static int[] convolution(double[][] matrix, int length, Bitmap bmp){
+    private static int[] convolution(double[][] matrix, int length, Bitmap bmp, double coeffMin, double coeffMax){
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
         int[] newPixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+        double red, green, blue;
+        int x_pixelMatrix, y_pixelMatrix;
 
-        for(int i = 0; i < newPixels.length; i++) {
-            double red = 0, blue = 0, green = 0;
-            if(i <= width * (length / 2) || i >= width * (height - (length / 2)) || i % width < length / 2 || i % width >= width - (length / 2)){
+        for (int i = 0; i < pixels.length; i++) {
+            red = blue = green = 0;
+            x_pixelMatrix = i % width;
+            y_pixelMatrix = i / width;
+
+            if (i <= width * (length / 2) || i >= width * (height - (length / 2)) || i % width < length / 2 || i % width >= width - (length / 2)) {
                 red = Color.red(pixels[i]);
                 green = Color.green(pixels[i]);
                 blue = Color.blue(pixels[i]);
-            }else{
-                int indexX = 0, indexY = 0;
-                for (int x = i - length/2; x < i - length/2; x++) {
-                    for (int y = i-(width*length/2); y < i+(width*length/2); y++) {
-                        int index = x+y*width;
-                        red += Color.red(pixels[index]) + matrix[indexX][indexY];
-                        green += Color.green(pixels[index]) + matrix[indexX][indexY];
-                        blue += Color.blue(pixels[index]) + matrix[indexX][indexY];
+            } else {
+                int indexX = 0;
+                int indexY = 0;
+                for (int x = x_pixelMatrix - (length / 2); x <= x_pixelMatrix + (length / 2); x++) {
+                    for (int y = y_pixelMatrix - (length / 2); y <= y_pixelMatrix + (length / 2); y++) {
+                        red += Color.red(pixels[x + y * width]) * matrix[indexX][indexY];
+                        green += Color.green(pixels[x + y * width]) * matrix[indexX][indexY];
+                        blue += Color.blue(pixels[x + y * width]) * matrix[indexX][indexY];
+
                         indexY++;
                     }
                     indexX++;
                     indexY = 0;
                 }
             }
-            newPixels[i] = Color.rgb((int)red,(int)green,(int)blue);
+            red = standardization(red,coeffMin,coeffMax);
+            green = standardization(green,coeffMin,coeffMax);
+            blue = standardization(blue,coeffMin,coeffMax);
+            newPixels[i] = Color.rgb((int)red, (int)green, (int)blue);
         }
         return newPixels;
     }
