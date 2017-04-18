@@ -10,7 +10,7 @@ public abstract class Filter {
     final static private double[][] LAPLACE_FILTER1 = {{0, 1, 0},{1, -4, 1},{0, 1, 0}};
     final static private double[][] LAPLACE_FILTER2 = {{1, 1, 1},{1, -8, 1},{1, 1, 1}};
 
-    final static private double[][] SOBEL_X_FILTER = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};<
+    final static private double[][] SOBEL_X_FILTER = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
     final static private double[][] SOBEL_Y_FILTER = {{-1, -2, -1},{0, 0, 0},{-1, -2, -1}};
 
     private static Bitmap checkMutable(Bitmap bmp) {
@@ -21,7 +21,7 @@ public abstract class Filter {
     }
 
     private static double standardization(double val, double coeffMin, double coeffMax) {
-        return (val - 255 * coeffMin) / (coeffMax - coeffMin);
+        return 255 * ((val - coeffMin) / (coeffMax - coeffMin));
     }
 
     private static double inColor(double value) {
