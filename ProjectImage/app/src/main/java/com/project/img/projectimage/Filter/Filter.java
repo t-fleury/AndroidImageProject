@@ -20,8 +20,8 @@ public abstract class Filter {
         return bmp;
     }
 
-    private static double standardization(double val, double coeffMin, double coeffMax) {
-        return 255 * ((val - coeffMin) / (coeffMax - coeffMin));
+    private static double standardization(double val, double coeff) {
+        return (val + 255*coeff) / (2*coeff);
     }
 
     private static double inColor(double value) {
@@ -203,12 +203,10 @@ public abstract class Filter {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] finalLaplacian;
-        int limit4CX = 4*255;
-        int limit8CX = 8*255;
         if (choiceMatrix == 1) {
-            finalLaplacian = convolutionV2(LAPLACE_FILTER1, 3, bmp, -limit4CX, limit4CX);
+            finalLaplacian = convolutionV2(LAPLACE_FILTER1, 3, bmp, 4);
         } else {
-            finalLaplacian = convolutionV2(LAPLACE_FILTER2, 3, bmp, -limit8CX, limit8CX);
+            finalLaplacian = convolutionV2(LAPLACE_FILTER2, 3, bmp, 8);
         }
         bmp.setPixels(finalLaplacian, 0, width, 0, 0, width, height);
         return bmp;
@@ -243,7 +241,10 @@ public abstract class Filter {
         int[] sobelY = convolutionV2(SOBEL_Y_FILTER, 3, bmp, -limitSobel, limitSobel);
         int[] finalSobel = new int[width * height];
         for (int i = 0; i < width * height; i++) {
-            finalSobel[i] = (int) Math.sqrt(sobelX[i] * sobelX[i] + sobelY[i] * sobelY[i]);
+            int red = (int)Math.sqrt(Color.red(sobelX[i]) * Color.red(sobelX[i]) + Color.red(sobelY[i]) * Color.red(sobelY[i]));
+            int green = (int)Math.sqrt(Color.green(sobelX[i]) * Color.green(sobelX[i]) + Color.green(sobelY[i]) * Color.green(sobelY[i]));
+            int blue = (int)Math.sqrt(Color.blue(sobelX[i]) * Color.blue(sobelX[i]) + Color.blue(sobelY[i]) * Color.blue(sobelY[i]));
+            finalSobel[i] = Color.rgb(red, green, blue);
         }
         bmp.setPixels(finalSobel, 0, width, 0, 0, width, height);
         return bmp;
@@ -289,7 +290,7 @@ public abstract class Filter {
         return newPixels;
     }
 
-    private static int[] convolutionV2(double[][] matrix, int length, Bitmap bmp, double coeffMin, double coeffMax) {
+    private static int[] convolutionV2(double[][] matrix, int length, Bitmap bmp, double coeff) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -321,9 +322,9 @@ public abstract class Filter {
                     cptJ = 0;
                 }
             }
-            red = (int) standardization(redF, coeffMin, coeffMax);
-            green = (int) standardization(greenF, coeffMin, coeffMax);
-            blue = (int) standardization(blueF, coeffMin, coeffMax);
+            red = (int) standardization(redF, coeff);
+            green = (int) standardization(greenF, coeff);
+            blue = (int) standardization(blueF, coeff);
             newPixels[i] = Color.rgb(red, green, blue);
         }
         return newPixels;
