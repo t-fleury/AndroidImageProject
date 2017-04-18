@@ -200,6 +200,7 @@ public abstract class Filter {
     }
 
     public static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp) {
+        bmp = toShadeofGray(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] finalLaplacian;
@@ -234,6 +235,7 @@ public abstract class Filter {
     }
 
     public static Bitmap sobelConvolution(Bitmap bmp) {
+        bmp = toShadeofGray(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] sobelX = convolutionV2(SOBEL_X_FILTER, 3, bmp, 4);
