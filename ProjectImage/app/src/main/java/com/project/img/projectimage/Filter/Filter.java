@@ -29,8 +29,14 @@ public abstract class Filter {
         return bmp;
     }
 
-    private static double standardization(double val, double coeffMin, double coeffMax) {
-        return (val - 255 * coeffMin) / (coeffMax - coeffMin);
+    private static double standardization(double val) {
+        if (val > 255){
+            return 255;
+        }else if(val < 0) {
+            return 0;
+        }else{
+            return val;
+        }
     }
 
     private static double inColor(double value) {
@@ -204,7 +210,7 @@ public abstract class Filter {
                 meanMatrix[i][j] = 1 / (Math.pow(sizeMatrix, 2));
             }
         }
-        bmp.setPixels(convolution(meanMatrix, sizeMatrix, bmp, 0, 255), 0, width, 0, 0, width, height);
+        bmp.setPixels(convolution(meanMatrix, sizeMatrix, bmp), 0, width, 0, 0, width, height);
         return bmp;
     }
 
@@ -213,9 +219,9 @@ public abstract class Filter {
         int height = bmp.getHeight();
         int[] finalLaplacian;
         if (choiceMatrix == 1) {
-            finalLaplacian = convolution(LAPLACE_FILTER1, 3, bmp, -255 * 4, 255 * 4);
+            finalLaplacian = convolution(LAPLACE_FILTER1, 3, bmp);
         } else {
-            finalLaplacian = convolution(LAPLACE_FILTER2, 3, bmp, -255 * 8, 255 * 8);
+            finalLaplacian = convolution(LAPLACE_FILTER2, 3, bmp);
         }
         bmp.setPixels(finalLaplacian, 0, width, 0, 0, width, height);
         return bmp;
@@ -238,15 +244,15 @@ public abstract class Filter {
         }
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        bmp.setPixels(convolution(gaussianMatrix, matrixSize, bmp, 0, 255), 0, width, 0, 0, width, height);
+        bmp.setPixels(convolution(gaussianMatrix, matrixSize, bmp), 0, width, 0, 0, width, height);
         return bmp;
     }
 
     public static Bitmap sobelConvolution(Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        int[] sobelX = convolution(SOBEL_X_FILTER, 3, bmp, -4 * 255, 4 * 255);
-        int[] sobelY = convolution(SOBEL_Y_FILTER, 3, bmp, -4 * 255, 4 * 255);
+        int[] sobelX = convolution(SOBEL_X_FILTER, 3, bmp);
+        int[] sobelY = convolution(SOBEL_Y_FILTER, 3, bmp);
         int[] finalSobel = new int[width * height];
         for (int i = 0; i < width * height; i++) {
             finalSobel[i] = (int) Math.sqrt(Math.pow(sobelX[i], 2) + Math.pow(sobelY[i], 2));
@@ -255,7 +261,7 @@ public abstract class Filter {
         return bmp;
     }
 
-    private static int[] convolution(double[][] matrix, int length, Bitmap bmp, double coeffMin, double coeffMax) {
+    private static int[] convolution(double[][] matrix, int length, Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
@@ -287,9 +293,9 @@ public abstract class Filter {
                     cptJ = 0;
                 }
             }
-            red = (int) standardization(redF, coeffMin, coeffMax);
-            green = (int) standardization(greenF, coeffMin, coeffMax);
-            blue = (int) standardization(blueF, coeffMin, coeffMax);
+            red = (int) standardization(redF);
+            green = (int) standardization(greenF);
+            blue = (int) standardization(blueF);
             newPixels[i] = Color.rgb(red, green, blue);
         }
         return newPixels;
