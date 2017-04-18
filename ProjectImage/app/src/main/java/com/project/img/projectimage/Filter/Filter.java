@@ -2,47 +2,48 @@ package com.project.img.projectimage.Filter;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+
 import java.util.Arrays;
 
-public abstract class Filter{
+public abstract class Filter {
 
     final static private double[][] LAPLACE_FILTER1 = {{0, 1, 0},
-                                                       {1,-4, 1},
-                                                       {0, 1, 0}};
+            {1, -4, 1},
+            {0, 1, 0}};
     final static private double[][] LAPLACE_FILTER2 = {{1, 1, 1},
-                                                       {1,-8, 1},
-                                                       {1, 1, 1}};
+            {1, -8, 1},
+            {1, 1, 1}};
 
-    final static private double[][] SOBEL_X_FILTER = {{-1,0,1},
-                                                      {-2,0,2},
-                                                      {-1,0,1}};
+    final static private double[][] SOBEL_X_FILTER = {{-1, 0, 1},
+            {-2, 0, 2},
+            {-1, 0, 1}};
 
-    final static private double[][] SOBEL_Y_FILTER = {{-1,-2,-1},
-                                                      { 0, 0, 0},
-                                                      {-1,-2,-1}};
+    final static private double[][] SOBEL_Y_FILTER = {{-1, -2, -1},
+            {0, 0, 0},
+            {-1, -2, -1}};
 
-    private static Bitmap checkMutable(Bitmap bmp){
-        if(!bmp.isMutable()){
-            bmp = bmp.copy(bmp.getConfig(),true);
+    private static Bitmap checkMutable(Bitmap bmp) {
+        if (!bmp.isMutable()) {
+            bmp = bmp.copy(bmp.getConfig(), true);
         }
         return bmp;
     }
 
-    private static double standardization(double val, double coeffMin, double coeffMax){
-        return (val - 255*coeffMin) / (coeffMax - coeffMin);
+    private static double standardization(double val, double coeffMin, double coeffMax) {
+        return (val - 255 * coeffMin) / (coeffMax - coeffMin);
     }
 
-    private static double inColor(double value){
-        if (value > 255){
+    private static double inColor(double value) {
+        if (value > 255) {
             return 255;
-        }else if(value < 0){
+        } else if (value < 0) {
             return 0;
-        }else{
+        } else {
             return value;
         }
     }
 
-    public static Bitmap changeLuminosity(Bitmap bmp, int percentage){
+    public static Bitmap changeLuminosity(Bitmap bmp, int percentage) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -50,9 +51,9 @@ public abstract class Filter{
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
         for (int i = 0; i < pixels.length; i++) {
             int o = pixels[i];
-            int blue = (int)inColor(Color.blue(o) + percentage);
-            int red = (int)inColor(Color.red(o) + percentage);
-            int green = (int)inColor(Color.green(o) + percentage);
+            int blue = (int) inColor(Color.blue(o) + percentage);
+            int red = (int) inColor(Color.red(o) + percentage);
+            int green = (int) inColor(Color.green(o) + percentage);
 
             pixels[i] = Color.rgb(red, green, blue);
         }
@@ -60,7 +61,7 @@ public abstract class Filter{
         return bmp;
     }
 
-    public static Bitmap changeContrast(Bitmap bmp, int percentage){
+    public static Bitmap changeContrast(Bitmap bmp, int percentage) {
         return bmp;
     }
 
@@ -72,9 +73,9 @@ public abstract class Filter{
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
 
         for (int i = 0; i < pixels.length; i++) {
-            int r = ((Color.red(pixels[i])*3)/10);
-            int g = ((Color.green(pixels[i])*59)/100);
-            int b = ((Color.blue(pixels[i])*11)/100);
+            int r = ((Color.red(pixels[i]) * 3) / 10);
+            int g = ((Color.green(pixels[i]) * 59) / 100);
+            int b = ((Color.blue(pixels[i]) * 11) / 100);
             int total = b + r + g;
 
             pixels[i] = Color.rgb(total, total, total);
@@ -95,9 +96,9 @@ public abstract class Filter{
             int red = Color.red(pixels[i]);
             int green = Color.green(pixels[i]);
 
-            int finalRed = (int)inColor((red*393/1000)+(green*769/1000)+(blue*189/1000));
-            int finalGreen = (int)inColor((red*349/1000)+(green*686/1000)+(blue*168/1000));
-            int finalBlue = (int)inColor((red*272/1000)+(green*534/1000)+(blue*131/1000));
+            int finalRed = (int) inColor((red * 393 / 1000) + (green * 769 / 1000) + (blue * 189 / 1000));
+            int finalGreen = (int) inColor((red * 349 / 1000) + (green * 686 / 1000) + (blue * 168 / 1000));
+            int finalBlue = (int) inColor((red * 272 / 1000) + (green * 534 / 1000) + (blue * 131 / 1000));
 
             pixels[i] = Color.rgb(finalRed, finalGreen, finalBlue);
         }
@@ -137,7 +138,7 @@ public abstract class Filter{
             int red = Color.red(pixels[i]);
             int green = Color.green(pixels[i]);
             Color.RGBToHSV(red, green, blue, HSV);
-            if(HSV[0] < option - 30 || HSV[0] > option + 30){
+            if (HSV[0] < option - 30 || HSV[0] > option + 30) {
                 int total = blue + red + green;
                 pixels[i] = Color.rgb(total, total, total);
             }
@@ -194,39 +195,39 @@ public abstract class Filter{
         return bmp;
     }
 
-    public static Bitmap meanConvolution(int sizeMatrix, Bitmap bmp){
+    public static Bitmap meanConvolution(int sizeMatrix, Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         double[][] meanMatrix = new double[sizeMatrix][sizeMatrix];
         for (int i = 0; i < sizeMatrix; i++) {
             for (int j = 0; j < sizeMatrix; j++) {
-                meanMatrix[i][j] = 1/(Math.pow(sizeMatrix,2));
+                meanMatrix[i][j] = 1 / (Math.pow(sizeMatrix, 2));
             }
         }
-        bmp.setPixels(convolution(meanMatrix,sizeMatrix,bmp,0,255), 0, width, 0, 0, width, height);
+        bmp.setPixels(convolution(meanMatrix, sizeMatrix, bmp, 0, 255), 0, width, 0, 0, width, height);
         return bmp;
     }
 
-    public static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp){
+    public static Bitmap laplacianConvolution(int choiceMatrix, Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] finalLaplacian;
-        if(choiceMatrix == 1){
-            finalLaplacian = convolution(LAPLACE_FILTER1,3,bmp, -255*4, 255*4);
-        }else{
-            finalLaplacian = convolution(LAPLACE_FILTER2,3,bmp, -255*8,255*8);
+        if (choiceMatrix == 1) {
+            finalLaplacian = convolution(LAPLACE_FILTER1, 3, bmp, -255 * 4, 255 * 4);
+        } else {
+            finalLaplacian = convolution(LAPLACE_FILTER2, 3, bmp, -255 * 8, 255 * 8);
         }
         bmp.setPixels(finalLaplacian, 0, width, 0, 0, width, height);
         return bmp;
     }
 
-    public static Bitmap gaussianConvolution(int matrixSize, double sigma, Bitmap bmp){
+    public static Bitmap gaussianConvolution(int matrixSize, double sigma, Bitmap bmp) {
         double[][] gaussianMatrix = new double[matrixSize][matrixSize];
         double sum = 0.0;
         int shift = matrixSize / 2;
         for (int x = -shift; x <= shift; x++) {
             for (int y = -shift; y <= shift; y++) {
-                gaussianMatrix[x + shift][y + shift] = (Math.exp((-(Math.pow(x, 2) + Math.pow(y, 2))) / (2 * Math.pow(sigma,2)))) / (2*Math.PI*Math.pow(sigma,2));
+                gaussianMatrix[x + shift][y + shift] = (Math.exp((-(Math.pow(x, 2) + Math.pow(y, 2))) / (2 * Math.pow(sigma, 2)))) / (2 * Math.PI * Math.pow(sigma, 2));
                 sum += gaussianMatrix[x + shift][y + shift];
             }
         }
@@ -237,94 +238,89 @@ public abstract class Filter{
         }
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        bmp.setPixels(convolution(gaussianMatrix,matrixSize,bmp,0,255), 0, width, 0, 0, width, height);
+        bmp.setPixels(convolution(gaussianMatrix, matrixSize, bmp, 0, 255), 0, width, 0, 0, width, height);
         return bmp;
     }
 
-    public static Bitmap sobelConvolution(Bitmap bmp){
+    public static Bitmap sobelConvolution(Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        int[] sobelX = convolution(SOBEL_X_FILTER,3,bmp, -4*255,4*255);
-        int[] sobelY = convolution(SOBEL_Y_FILTER,3,bmp,-4*255,4*255);
-        int[] finalSobel = new int[width*height];
+        int[] sobelX = convolution(SOBEL_X_FILTER, 3, bmp, -4 * 255, 4 * 255);
+        int[] sobelY = convolution(SOBEL_Y_FILTER, 3, bmp, -4 * 255, 4 * 255);
+        int[] finalSobel = new int[width * height];
         for (int i = 0; i < width * height; i++) {
-            finalSobel[i] = (int)Math.sqrt(Math.pow(sobelX[i],2) + Math.pow(sobelY[i],2));
+            finalSobel[i] = (int) Math.sqrt(Math.pow(sobelX[i], 2) + Math.pow(sobelY[i], 2));
         }
         bmp.setPixels(finalSobel, 0, width, 0, 0, width, height);
         return bmp;
     }
 
-    private static int[] convolution(double[][] matrix, int length, Bitmap bmp, double coeffMin, double coeffMax){
-        bmp = checkMutable(bmp);
+    private static int[] convolution(double[][] matrix, int length, Bitmap bmp, double coeffMin, double coeffMax) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
-        int[] newPixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        double red, green, blue;
-        int x_pixelMatrix, y_pixelMatrix;
-
+        int[] newPixels = new int[width * height];
+        int red, blue, green, x_pixelMatrix, y_pixelMatrix;
+        double redF, blueF, greenF;
         for (int i = 0; i < pixels.length; i++) {
-            red = blue = green = 0;
+            redF = blueF = greenF = 0;
             x_pixelMatrix = i % width;
             y_pixelMatrix = i / width;
 
             if (i <= width * (length / 2) || i >= width * (height - (length / 2)) || i % width < length / 2 || i % width >= width - (length / 2)) {
-                red = Color.red(pixels[i]);
-                green = Color.green(pixels[i]);
-                blue = Color.blue(pixels[i]);
+                redF = Color.red(pixels[i]);
+                greenF = Color.green(pixels[i]);
+                blueF = Color.blue(pixels[i]);
             } else {
-                int indexX = 0;
-                int indexY = 0;
+                int cptI = 0;
+                int cptJ = 0;
                 for (int x = x_pixelMatrix - (length / 2); x <= x_pixelMatrix + (length / 2); x++) {
                     for (int y = y_pixelMatrix - (length / 2); y <= y_pixelMatrix + (length / 2); y++) {
-                        red += Color.red(pixels[x + y * width]) * matrix[indexX][indexY];
-                        green += Color.green(pixels[x + y * width]) * matrix[indexX][indexY];
-                        blue += Color.blue(pixels[x + y * width]) * matrix[indexX][indexY];
+                        redF += Color.red(pixels[x + y * width]) * matrix[cptI][cptJ];
+                        greenF += Color.green(pixels[x + y * width]) * matrix[cptI][cptJ];
+                        blueF += Color.blue(pixels[x + y * width]) * matrix[cptI][cptJ];
 
-                        indexY++;
+                        cptJ++;
                     }
-                    indexX++;
-                    indexY = 0;
+                    cptI++;
+                    cptJ = 0;
                 }
             }
-            red = standardization(red,coeffMin,coeffMax);
-            green = standardization(green,coeffMin,coeffMax);
-            blue = standardization(blue,coeffMin,coeffMax);
-            newPixels[i] = Color.rgb((int)red, (int)green, (int)blue);
+            red = (int) standardization(redF, coeffMin, coeffMax);
+            green = (int) standardization(greenF, coeffMin, coeffMax);
+            blue = (int) standardization(blueF, coeffMin, coeffMax);
+            newPixels[i] = Color.rgb(red, green, blue);
         }
         return newPixels;
     }
 
-    public static Bitmap medianConvolution(int sizeMatrix, Bitmap bmp){
+    public static Bitmap medianConvolution(int sizeMatrix, Bitmap bmp) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
         int[] pixels = new int[width * height];
         int[] pixelMoyenneur = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int[] red= new int[sizeMatrix*sizeMatrix];
-        int[] blue= new int[sizeMatrix*sizeMatrix];
-        int[] green= new int[sizeMatrix*sizeMatrix];
+        int[] red = new int[sizeMatrix * sizeMatrix];
+        int[] blue = new int[sizeMatrix * sizeMatrix];
+        int[] green = new int[sizeMatrix * sizeMatrix];
         int x_pixelMatrix, y_pixelMatrix;
-        for(int i = 0; i < pixelMoyenneur.length; i++)
-        {
-            x_pixelMatrix=i%width;
-            y_pixelMatrix=i/width;
+        for (int i = 0; i < pixelMoyenneur.length; i++) {
+            x_pixelMatrix = i % width;
+            y_pixelMatrix = i / width;
 
-            if(i <= width*(sizeMatrix/2) || i >= width * (height-(sizeMatrix/2)) || i % width < sizeMatrix/2  || i % width >= width-(sizeMatrix/2))
-            {
+            if (i <= width * (sizeMatrix / 2) || i >= width * (height - (sizeMatrix / 2)) || i % width < sizeMatrix / 2 || i % width >= width - (sizeMatrix / 2)) {
                 red[0] = Color.red(pixels[i]);
                 green[0] = Color.green(pixels[i]);
                 blue[0] = Color.blue(pixels[i]);
-            }
-            else {
+            } else {
                 int index = 0;
-                for (int x = x_pixelMatrix -(sizeMatrix / 2); x <= x_pixelMatrix +(sizeMatrix / 2); x++) {
+                for (int x = x_pixelMatrix - (sizeMatrix / 2); x <= x_pixelMatrix + (sizeMatrix / 2); x++) {
                     for (int y = y_pixelMatrix - (sizeMatrix / 2); y <= y_pixelMatrix + (sizeMatrix / 2); y++) {
-                        red[index] = Color.red(pixels[x+y*width]);
-                        green[index] = Color.green(pixels[x+y*width]);
-                        blue[index] = Color.blue(pixels[x+y*width]);
+                        red[index] = Color.red(pixels[x + y * width]);
+                        green[index] = Color.green(pixels[x + y * width]);
+                        blue[index] = Color.blue(pixels[x + y * width]);
                         index++;
                     }
                 }
@@ -332,21 +328,21 @@ public abstract class Filter{
             Arrays.sort(red);
             Arrays.sort(green);
             Arrays.sort(blue);
-            pixelMoyenneur[i] = Color.rgb(red[(sizeMatrix/2 + 1)], green[(sizeMatrix/2 + 1)], blue[(sizeMatrix/2 + 1)]);
+            pixelMoyenneur[i] = Color.rgb(red[(sizeMatrix / 2 + 1)], green[(sizeMatrix / 2 + 1)], blue[(sizeMatrix / 2 + 1)]);
         }
 
         bmp.setPixels(pixelMoyenneur, 0, width, 0, 0, width, height);
         return bmp;
     }
 
-    private static Bitmap inverseColor(Bitmap bmp){
+    private static Bitmap inverseColor(Bitmap bmp) {
         int[] pixels = new int[bmp.getWidth() * bmp.getHeight()];
         bmp.getPixels(pixels, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         for (int i = 0; i < pixels.length; i++) {
             int o = pixels[i];
-            int blue = (int)inColor(254 - Color.blue(o));
-            int red = (int)inColor(254 - Color.red(o));
-            int green = (int)inColor(254 - Color.green(o));
+            int blue = (int) inColor(254 - Color.blue(o));
+            int red = (int) inColor(254 - Color.red(o));
+            int green = (int) inColor(254 - Color.green(o));
 
             pixels[i] = Color.rgb(red, green, blue);
         }
@@ -354,10 +350,10 @@ public abstract class Filter{
         return bmp;
     }
 
-    public static Bitmap pencilEffect(Bitmap bmp){
+    public static Bitmap pencilEffect(Bitmap bmp) {
         bmp = sobelConvolution(bmp);
         bmp = inverseColor(bmp);
-        bmp = gaussianConvolution(3,1,bmp);
+        bmp = gaussianConvolution(3, 1, bmp);
         return bmp;
     }
 }
