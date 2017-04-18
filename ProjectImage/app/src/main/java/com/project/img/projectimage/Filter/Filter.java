@@ -236,9 +236,8 @@ public abstract class Filter {
     public static Bitmap sobelConvolution(Bitmap bmp) {
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        int limitSobel = 4*255;
-        int[] sobelX = convolutionV2(SOBEL_X_FILTER, 3, bmp, -limitSobel, limitSobel);
-        int[] sobelY = convolutionV2(SOBEL_Y_FILTER, 3, bmp, -limitSobel, limitSobel);
+        int[] sobelX = convolutionV2(SOBEL_X_FILTER, 3, bmp, 4);
+        int[] sobelY = convolutionV2(SOBEL_Y_FILTER, 3, bmp, 4);
         int[] finalSobel = new int[width * height];
         for (int i = 0; i < width * height; i++) {
             int red = (int)Math.sqrt(Color.red(sobelX[i]) * Color.red(sobelX[i]) + Color.red(sobelY[i]) * Color.red(sobelY[i]));
