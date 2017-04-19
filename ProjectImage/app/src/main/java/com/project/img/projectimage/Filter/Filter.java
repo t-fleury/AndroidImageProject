@@ -205,9 +205,9 @@ public abstract class Filter {
         int height = bmp.getHeight();
         int[] finalLaplacian;
         if (choiceMatrix == 1) {
-            finalLaplacian = convolutionV2(LAPLACE_FILTER1, 3, bmp, 4);
+            finalLaplacian = convolution(LAPLACE_FILTER1, 3, bmp);
         } else {
-            finalLaplacian = convolutionV2(LAPLACE_FILTER2, 3, bmp, 8);
+            finalLaplacian = convolution(LAPLACE_FILTER2, 3, bmp);
         }
         bmp.setPixels(finalLaplacian, 0, width, 0, 0, width, height);
         return bmp;
@@ -238,8 +238,8 @@ public abstract class Filter {
         bmp = toShadeofGray(bmp);
         int width = bmp.getWidth();
         int height = bmp.getHeight();
-        int[] sobelX = convolutionV2(SOBEL_X_FILTER, 3, bmp, 4);
-        int[] sobelY = convolutionV2(SOBEL_Y_FILTER, 3, bmp, 4);
+        int[] sobelX = convolution(SOBEL_X_FILTER, 3, bmp);
+        int[] sobelY = convolution(SOBEL_Y_FILTER, 3, bmp);
         int[] finalSobel = new int[width * height];
         for (int i = 0; i < width * height; i++) {
             int red = (int)Math.sqrt(Color.red(sobelX[i]) * Color.red(sobelX[i]) + Color.red(sobelY[i]) * Color.red(sobelY[i]));
