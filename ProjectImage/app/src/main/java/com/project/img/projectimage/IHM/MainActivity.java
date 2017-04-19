@@ -1,7 +1,9 @@
 package com.project.img.projectimage.IHM;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.project.img.projectimage.R;
 
@@ -62,7 +65,27 @@ public class MainActivity extends AppCompatActivity {
         savedPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
+                SharedPreferences sharedPref = getSharedPreferences("SharedPref",Context.MODE_PRIVATE);
+                String last_saved_image = sharedPref.getString("Last Saved Image", "");
+                if (last_saved_image.isEmpty()){
+                    Toast toast = Toast.makeText(getBaseContext(), R.string.no_saved_img, Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Log.d("LSI str", last_saved_image);
+                    Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
+                    Uri selectedImage = Uri.parse(last_saved_image);
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                    if(cursor != null) {
+                        if (cursor.moveToFirst()) {
+                            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                            mCurrentPhotoPath = cursor.getString(columnIndex);
+                        }
+                        cursor.close();
+                    }
+                    intent.putExtra("Picture path", mCurrentPhotoPath);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -92,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
                         photoFile);
+                Log.d("takepic uri", photoURI.toString());
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -119,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             Intent intent = new Intent(this, ImageActivity.class);
+            Log.d("mCPP", mCurrentPhotoPath);
             intent.putExtra("Picture path", mCurrentPhotoPath);
             startActivity(intent);
         }

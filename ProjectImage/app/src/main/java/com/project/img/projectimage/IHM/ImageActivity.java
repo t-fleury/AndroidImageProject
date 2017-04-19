@@ -1,9 +1,12 @@
 package com.project.img.projectimage.IHM;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -131,6 +134,14 @@ public class ImageActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.save_option:
                 String res = MediaStore.Images.Media.insertImage(contentResolver, picture.copy(picture.getConfig(), true), "", "");
+
+                SharedPreferences sharedPref = getSharedPreferences("SharedPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                Uri uri = Uri.parse(res);
+                Log.d("uri", uri.toString());
+                editor.putString("Last Saved Image", uri.toString());
+                editor.commit();
+
                 return true;
             case R.id.undo_option:
                 Bitmap bitmap = saved_pictures.lastElement();

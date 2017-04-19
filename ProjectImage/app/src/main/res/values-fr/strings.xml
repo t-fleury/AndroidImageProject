@@ -39,5 +39,6 @@
         <item>7 par 7</item>
     </string-array>
     <string name="undo_option">Annuler le dernier traitement</string>
+    <string name="no_saved_img">Il n\'y a pas d\'image sauvegardée</string>
 
 </resources>

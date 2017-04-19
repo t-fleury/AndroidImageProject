@@ -39,5 +39,6 @@
         <item>7 by 7</item>
     </string-array>
     <string name="undo_option">Undo last processing</string>
+    <string name="no_saved_img">There\'s no image saved</string>
 
 </resources>
