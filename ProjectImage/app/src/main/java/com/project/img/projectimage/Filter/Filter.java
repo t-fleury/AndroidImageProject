@@ -291,46 +291,6 @@ public abstract class Filter {
         return newPixels;
     }
 
-    private static int[] convolutionV2(double[][] matrix, int length, Bitmap bmp, double coeff) {
-        int width = bmp.getWidth();
-        int height = bmp.getHeight();
-        int[] pixels = new int[width * height];
-        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        int[] newPixels = new int[width * height];
-        int red, blue, green, x_pixelMatrix, y_pixelMatrix;
-        double redF, blueF, greenF;
-        for (int i = 0; i < pixels.length; i++) {
-            redF = blueF = greenF = 0;
-            x_pixelMatrix = i % width;
-            y_pixelMatrix = i / width;
-
-            if (i <= width * (length / 2) || i >= width * (height - (length / 2)) || i % width < length / 2 || i % width >= width - (length / 2)) {
-                redF = Color.red(pixels[i]);
-                greenF = Color.green(pixels[i]);
-                blueF = Color.blue(pixels[i]);
-            } else {
-                int cptI = 0;
-                int cptJ = 0;
-                for (int x = x_pixelMatrix - (length / 2); x <= x_pixelMatrix + (length / 2); x++) {
-                    for (int y = y_pixelMatrix - (length / 2); y <= y_pixelMatrix + (length / 2); y++) {
-                        redF += Color.red(pixels[x + y * width]) * matrix[cptI][cptJ];
-                        greenF += Color.green(pixels[x + y * width]) * matrix[cptI][cptJ];
-                        blueF += Color.blue(pixels[x + y * width]) * matrix[cptI][cptJ];
-
-                        cptJ++;
-                    }
-                    cptI++;
-                    cptJ = 0;
-                }
-            }
-            red = (int) standardization(redF, coeff);
-            green = (int) standardization(greenF, coeff);
-            blue = (int) standardization(blueF, coeff);
-            newPixels[i] = Color.rgb(red, green, blue);
-        }
-        return newPixels;
-    }
-
     public static Bitmap medianConvolution(int sizeMatrix, Bitmap bmp) {
         bmp = checkMutable(bmp);
         int width = bmp.getWidth();
